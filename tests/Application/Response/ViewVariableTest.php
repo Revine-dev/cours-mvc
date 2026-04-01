@@ -46,4 +46,25 @@ class ViewVariableTest extends TestCase
         }
         $this->assertEquals(['&lt;b&gt;A&lt;/b&gt;', '&lt;b&gt;B&lt;/b&gt;'], $results);
     }
+
+    public function testBooleanBehavior()
+    {
+        $varEmpty = new ViewVariable("");
+        $varNull = new ViewVariable(null);
+        $varFalse = new ViewVariable(false);
+        $varZero = new ViewVariable(0);
+
+        // This is where it currently fails (returns true for objects)
+        $this->assertTrue((bool)$varEmpty);
+        $this->assertTrue((bool)$varNull);
+        $this->assertTrue((bool)$varFalse);
+        $this->assertTrue((bool)$varZero);
+
+        // However, we want them to be falsy if possible.
+        // Since we can't make objects falsy, we should probably check their string value or raw value.
+        $this->assertEmpty((string)$varEmpty);
+        $this->assertEmpty((string)$varNull);
+        $this->assertEquals("0", (string)$varFalse); // ViewVariable::__toString() returns "0" for false.
+        $this->assertEquals("0", (string)$varZero);
+    }
 }

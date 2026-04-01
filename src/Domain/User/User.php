@@ -8,40 +8,24 @@ use JsonSerializable;
 
 class User implements JsonSerializable
 {
-    private ?int $id;
+    public ?int $id;
+    public string $name;
+    public string $email;
+    public string $password;
+    public string $role;
 
-    private string $username;
-
-    private string $firstName;
-
-    private string $lastName;
-
-    public function __construct(?int $id, string $username, string $firstName, string $lastName)
+    public function __construct(array $data)
     {
-        $this->id = $id;
-        $this->username = strtolower($username);
-        $this->firstName = ucfirst($firstName);
-        $this->lastName = ucfirst($lastName);
+        $this->id = $data['id'] ?? null;
+        $this->name = $data['name'] ?? '';
+        $this->email = $data['email'] ?? '';
+        $this->password = $data['password'] ?? '';
+        $this->role = $data['role'] ?? 'User';
     }
 
-    public function getId(): ?int
+    public function isAdmin(): bool
     {
-        return $this->id;
-    }
-
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
+        return $this->role === 'Admin';
     }
 
     #[\ReturnTypeWillChange]
@@ -49,9 +33,9 @@ class User implements JsonSerializable
     {
         return [
             'id' => $this->id,
-            'username' => $this->username,
-            'firstName' => $this->firstName,
-            'lastName' => $this->lastName,
+            'name' => $this->name,
+            'email' => $this->email,
+            'role' => $this->role,
         ];
     }
 }

@@ -16,17 +16,23 @@ class InMemoryUserRepository implements UserRepository
     private array $users;
 
     /**
+     * @var User[]
+     */
+    private array $queryUsers;
+
+    /**
      * @param User[]|null $users
      */
     public function __construct(?array $users = null)
     {
         $this->users = $users ?? [
-            1 => new User(1, 'bill.gates', 'Bill', 'Gates'),
-            2 => new User(2, 'steve.jobs', 'Steve', 'Jobs'),
-            3 => new User(3, 'mark.zuckerberg', 'Mark', 'Zuckerberg'),
-            4 => new User(4, 'evan.spiegel', 'Evan', 'Spiegel'),
-            5 => new User(5, 'jack.dorsey', 'Jack', 'Dorsey'),
+            1 => new User(['id' => 1, 'name' => 'Bill Gates', 'email' => 'bill.gates@microsoft.com']),
+            2 => new User(['id' => 2, 'name' => 'Steve Jobs', 'email' => 'steve.jobs@apple.com']),
+            3 => new User(['id' => 3, 'name' => 'Mark Zuckerberg', 'email' => 'mark.zuckerberg@facebook.com']),
+            4 => new User(['id' => 4, 'name' => 'Evan Spiegel', 'email' => 'evan.spiegel@snapchat.com']),
+            5 => new User(['id' => 5, 'name' => 'Jack Dorsey', 'email' => 'jack.dorsey@twitter.com']),
         ];
+        $this->queryUsers = $this->users;
     }
 
     /**
@@ -47,5 +53,39 @@ class InMemoryUserRepository implements UserRepository
         }
 
         return $this->users[$id];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneBy(string $key, mixed $value): ?User
+    {
+        foreach ($this->users as $user) {
+            if (isset($user->$key) && $user->$key === $value) {
+                return $user;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function where(string $key, mixed $value): static
+    {
+        $this->queryUsers = array_filter($this->queryUsers, function ($user) use ($key, $value) {
+            return isset($user->$key) && $user->$key === $value;
+        });
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get(): array
+    {
+        $results = array_values($this->queryUsers);
+        $this->queryUsers = $this->users; // Reset
+        return $results;
     }
 }

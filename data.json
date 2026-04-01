@@ -1,0 +1,213 @@
+{
+  "properties": [
+    {
+      "id": 1,
+      "title": "Appartement de prestige avec vue Tour Eiffel",
+      "slug": "appartement-prestige-vue-tour-eiffel",
+      "description": "Appartement d’exception situé dans un immeuble haussmannien avec vue imprenable sur la Tour Eiffel.",
+      "price": 1850000,
+      "currency": "EUR",
+      "type": "apartment",
+      "status": "for_sale",
+      "created_at": "2026-03-20T10:15:00Z",
+      "updated_at": "2026-03-25T14:30:00Z",
+      "location": {
+        "address": "15 Avenue Montaigne",
+        "city": "Paris",
+        "postal_code": "75008",
+        "country": "France",
+        "latitude": 48.866,
+        "longitude": 2.303
+      },
+      "features": {
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "area": 120,
+        "floor": 5,
+        "year_built": 1905,
+        "garage": false,
+        "parking": true,
+        "furnished": true
+      },
+      "energy": {
+        "dpe": "C",
+        "ges": "C"
+      },
+      "amenities": [
+        "ascenseur",
+        "balcon",
+        "vue exceptionnelle",
+        "concierge",
+        "climatisation"
+      ],
+      "images": [
+        "https://placehold.co/800x600?text=Prestige+1",
+        "https://placehold.co/800x600?text=Prestige+2"
+      ],
+      "agent": {
+        "id": 201,
+        "name": "Claire Dubois",
+        "email": "claire.dubois@agence.com",
+        "phone": "+33 6 22 33 44 55"
+      }
+    },
+    {
+      "id": 2,
+      "title": "Villa contemporaine avec piscine sur la Côte d’Azur",
+      "slug": "villa-contemporaine-piscine-cote-azur",
+      "description": "Superbe villa moderne avec piscine à débordement et vue mer panoramique.",
+      "price": 2450000,
+      "currency": "EUR",
+      "type": "house",
+      "status": "for_sale",
+      "created_at": "2026-03-18T09:00:00Z",
+      "updated_at": "2026-03-22T11:45:00Z",
+      "location": {
+        "address": "8 Boulevard de la Croisette",
+        "city": "Cannes",
+        "postal_code": "06400",
+        "country": "France",
+        "latitude": 43.551,
+        "longitude": 7.012
+      },
+      "features": {
+        "bedrooms": 5,
+        "bathrooms": 4,
+        "area": 250,
+        "land_area": 1200,
+        "floor": null,
+        "year_built": 2018,
+        "garage": true,
+        "parking": true,
+        "furnished": true
+      },
+      "energy": {
+        "dpe": "A",
+        "ges": "A"
+      },
+      "amenities": [
+        "piscine",
+        "vue mer",
+        "terrasse",
+        "domotique",
+        "garage double"
+      ],
+      "images": [
+        "https://placehold.co/800x600?text=Villa+1",
+        "https://placehold.co/800x600?text=Villa+2"
+      ],
+      "agent": {
+        "id": 202,
+        "name": "Antoine Leroy",
+        "email": "antoine.leroy@agence.com",
+        "phone": "+33 6 55 66 77 88"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Loft design dans quartier historique",
+      "slug": "loft-design-quartier-historique",
+      "description": "Magnifique loft rénové avec des matériaux haut de gamme dans un quartier prisé.",
+      "price": 720000,
+      "currency": "EUR",
+      "type": "loft",
+      "status": "for_sale",
+      "created_at": "2026-03-15T08:30:00Z",
+      "updated_at": "2026-03-28T16:20:00Z",
+      "location": {
+        "address": "3 Place des Quinconces",
+        "city": "Bordeaux",
+        "postal_code": "33000",
+        "country": "France",
+        "latitude": 44.844,
+        "longitude": -0.573
+      },
+      "features": {
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "area": 95,
+        "floor": 2,
+        "year_built": 1890,
+        "garage": false,
+        "parking": true,
+        "furnished": false
+      },
+      "energy": {
+        "dpe": "B",
+        "ges": "A"
+      },
+      "amenities": [
+        "hauteur sous plafond",
+        "poutres apparentes",
+        "lumière naturelle",
+        "cuisine équipée"
+      ],
+      "images": [
+        "https://placehold.co/800x600?text=Loft+1",
+        "https://placehold.co/800x600?text=Loft+2"
+      ],
+      "agent": {
+        "id": 203,
+        "name": "Julien Moreau",
+        "email": "julien.moreau@agence.com",
+        "phone": "+33 7 99 88 77 66"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Immeuble de rapport en plein centre-ville",
+      "slug": "immeuble-rapport-centre-ville",
+      "description": "Immeuble entier composé de 10 appartements loués, idéal pour investisseur avec excellente rentabilité.",
+      "price": 3200000,
+      "currency": "EUR",
+      "type": "building",
+      "status": "for_sale",
+      "created_at": "2026-03-10T12:00:00Z",
+      "updated_at": "2026-03-29T10:00:00Z",
+      "location": {
+        "address": "25 Rue du Faubourg Saint-Honoré",
+        "city": "Paris",
+        "postal_code": "75008",
+        "country": "France",
+        "latitude": 48.871,
+        "longitude": 2.316
+      },
+      "features": {
+        "total_units": 10,
+        "area": 650,
+        "year_built": 1920,
+        "floors": 5,
+        "elevator": true,
+        "parking": false
+      },
+      "energy": {
+        "dpe": "D",
+        "ges": "D"
+      },
+      "amenities": [
+        "emplacement premium",
+        "rentabilité élevée",
+        "immeuble sécurisé"
+      ],
+      "images": [
+        "https://placehold.co/800x600?text=Immeuble+1",
+        "https://placehold.co/800x600?text=Immeuble+2"
+      ],
+      "agent": {
+        "id": 204,
+        "name": "Sophie Bernard",
+        "email": "sophie.bernard@agence.com",
+        "phone": "+33 6 44 55 66 77"
+      }
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Johnny",
+      "email": "admin@agence.com",
+      "password": "$2y$12$ytUzOLTuhiQruphdr.BOmuGhv8jeu66HcMOI3.0C6s/vaou2jJj3m",
+      "role": "Admin"
+    }
+  ]
+}

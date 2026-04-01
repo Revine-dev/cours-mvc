@@ -39,4 +39,9 @@ class StringHelper
 
         return $text;
     }
+
+    public function substr(string $text, int $offset, ?int $length = null): string
+    {
+        return mb_substr($text, $offset, $length);
+    }
 }

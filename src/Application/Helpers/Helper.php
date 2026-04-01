@@ -19,6 +19,9 @@ class Helper
         StringHelper::class,
         RouterHelper::class,
         ConfigHelper::class,
+        UserHelper::class,
+        NumberHelper::class,
+        ArrayHelper::class,
     ];
 
     public function __construct(ContainerInterface $container)

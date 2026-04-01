@@ -9,6 +9,7 @@ use App\Application\Response\Response;
 use App\Application\Helpers\Helper;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 abstract class Action
 {
@@ -30,10 +31,10 @@ abstract class Action
 
     public function __call(string $name, array $args): mixed
     {
-        if (method_exists($this->helper, $name) || isset($this->helper->$name)) {
+        if (isset($this->helper) && (method_exists($this->helper, $name) || isset($this->helper->$name))) {
             return $this->helper->$name(...$args);
         }
-        throw new \BadMethodCallException("Method {$name} does not exist.");
+        throw new \BadMethodCallException("Method {$name} does not exist or Helper not initialized.");
     }
 
     /**
@@ -42,17 +43,24 @@ abstract class Action
      */
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        $this->request = $request;
-        $this->response = $response;
-        $this->args = $args;
-
-        // Pass helper to response for view rendering
-        $this->response->setHelper($this->helper);
+        $this->init($request, $response, $args);
 
         try {
             return $this->action();
         } catch (DomainRecordNotFoundException $e) {
             $this->response->notFound($e->getMessage());
+        }
+    }
+
+    protected function init(Request $request, Response $response, array $args): void
+    {
+        $this->request = $request;
+        $this->response = $response;
+        $this->args = $args;
+
+        // Pass helper to response for view rendering if initialized
+        if (isset($this->helper)) {
+            $this->response->setHelper($this->helper);
         }
     }
 
@@ -91,6 +99,16 @@ abstract class Action
         $payload = new ActionPayload($statusCode, $data);
 
         return $this->respond($payload);
+    }
+
+    protected function redirect(string $page): Response
+    {
+        return $this->response->withHeader('Location', $this->route($page))->withStatus(302);
+    }
+
+    protected function render(string $view, array $data = []): Response
+    {
+        return $this->response->renderHtml($view, $data);
     }
 
     protected function respondWithError(ActionError $error, int $statusCode = 400): Response

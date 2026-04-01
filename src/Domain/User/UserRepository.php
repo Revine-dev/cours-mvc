@@ -17,4 +17,10 @@ interface UserRepository
      * @throws UserNotFoundException
      */
     public function findUserOfId(int $id): User;
+
+    public function findOneBy(string $key, mixed $value): ?User;
+
+    public function where(string $key, mixed $value): static;
+
+    public function get(): array;
 }

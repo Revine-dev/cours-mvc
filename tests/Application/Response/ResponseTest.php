@@ -38,7 +38,7 @@ class ResponseTest extends TestCase
         $response = $response->renderHtml($html);
 
         $body = (string) $response->getBody();
-        $this->assertStringContainsString('URL:http://example.com/test?foo=bar', $body);
+        $this->assertStringContainsString('URL:/test', $body);
         $this->assertStringContainsString('Config:localhost', $body);
     }
 
@@ -59,5 +59,18 @@ class ResponseTest extends TestCase
         $this->expectException(\BadMethodCallException::class);
         $response = new Response();
         $response->methodNotFoundSoThrow();
+    }
+
+    public function testTruthinessInView()
+    {
+        $this->getAppInstance();
+        $response = new Response();
+        $html = '<?php if ($error): ?>ErrorBox<?php else: ?>NoBox<?php endif; ?>';
+        
+        $responseNo = $response->renderHtml($html, ["error" => ""]);
+        $this->assertStringContainsString("NoBox", (string)$responseNo->getBody());
+        
+        $responseYes = $response->renderHtml($html, ["error" => "Some Error"]);
+        $this->assertStringContainsString("ErrorBox", (string)$responseYes->getBody());
     }
 }

@@ -12,49 +12,65 @@ class UserTest extends TestCase
     public function userProvider(): array
     {
         return [
-            [1, 'bill.gates', 'Bill', 'Gates'],
-            [2, 'steve.jobs', 'Steve', 'Jobs'],
-            [3, 'mark.zuckerberg', 'Mark', 'Zuckerberg'],
-            [4, 'evan.spiegel', 'Evan', 'Spiegel'],
-            [5, 'jack.dorsey', 'Jack', 'Dorsey'],
+            [1, 'Bill Gates', 'bill.gates@microsoft.com', 'Admin'],
+            [2, 'Steve Jobs', 'steve.jobs@apple.com', 'User'],
         ];
     }
 
     /**
      * @dataProvider userProvider
      * @param int    $id
-     * @param string $username
-     * @param string $firstName
-     * @param string $lastName
+     * @param string $name
+     * @param string $email
+     * @param string $role
      */
-    public function testGetters(int $id, string $username, string $firstName, string $lastName)
+    public function testProperties(int $id, string $name, string $email, string $role)
     {
-        $user = new User($id, $username, $firstName, $lastName);
+        $user = new User([
+            'id' => $id,
+            'name' => $name,
+            'email' => $email,
+            'role' => $role
+        ]);
 
-        $this->assertEquals($id, $user->getId());
-        $this->assertEquals($username, $user->getUsername());
-        $this->assertEquals($firstName, $user->getFirstName());
-        $this->assertEquals($lastName, $user->getLastName());
+        $this->assertEquals($id, $user->id);
+        $this->assertEquals($name, $user->name);
+        $this->assertEquals($email, $user->email);
+        $this->assertEquals($role, $user->role);
     }
 
     /**
      * @dataProvider userProvider
      * @param int    $id
-     * @param string $username
-     * @param string $firstName
-     * @param string $lastName
+     * @param string $name
+     * @param string $email
+     * @param string $role
      */
-    public function testJsonSerialize(int $id, string $username, string $firstName, string $lastName)
+    public function testJsonSerialize(int $id, string $name, string $email, string $role)
     {
-        $user = new User($id, $username, $firstName, $lastName);
+        $user = new User([
+            'id' => $id,
+            'name' => $name,
+            'email' => $email,
+            'role' => $role
+        ]);
 
         $expectedPayload = json_encode([
             'id' => $id,
-            'username' => $username,
-            'firstName' => $firstName,
-            'lastName' => $lastName,
+            'name' => $name,
+            'email' => $email,
+            'role' => $role,
         ]);
 
         $this->assertEquals($expectedPayload, json_encode($user));
+    }
+
+    public function testIsAdmin()
+    {
+        $admin = new User(['role' => 'Admin']);
+        $user = new User(['role' => 'User']);
+
+        $this->assertTrue($admin->isAdmin());
+        $this->assertFalse($user->isAdmin());
     }
 }

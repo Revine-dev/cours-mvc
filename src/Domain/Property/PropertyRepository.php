@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Property;
+
+interface PropertyRepository
+{
+    /**
+     * @return Property[]
+     */
+    public function findAll(): array;
+
+    /**
+     * @param int $id
+     * @return Property
+     */
+    public function findPropertyOfId(int $id): Property;
+
+    /**
+     * @param string $slug
+     * @return Property
+     */
+    public function findPropertyOfSlug(string $slug): Property;
+
+    // --- Query Builder Methods ---
+
+    public function findOneBy(string $key, mixed $value): ?Property;
+
+    public function where(string $key, mixed $value): static;
+
+    public function filter(callable $callback): static;
+
+    public function limit(int $n): static;
+
+    public function latest(): static;
+
+    /**
+     * @return Property[]
+     */
+    public function get(): array;
+}

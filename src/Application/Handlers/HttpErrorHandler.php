@@ -20,6 +20,7 @@ use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler as SlimErrorHandler;
 use Slim\Routing\RouteContext;
 use App\Application\Config\ConfigRegistry;
+use App\Domain\DomainException\DomainRecordNotFoundException;
 use Throwable;
 
 class HttpErrorHandler extends SlimErrorHandler
@@ -57,16 +58,22 @@ class HttpErrorHandler extends SlimErrorHandler
         $statusCode = 500;
         $error = new ActionError(
             ActionError::SERVER_ERROR,
-            'An internal error has occurred while processing your request.'
+            'An internal error has occurred while processing your request'
         );
 
         if ($exception instanceof AppException || $exception instanceof RouterException) {
             $statusCode = $exception->getStatusCode();
             $error->setType($exception->getErrorType());
-            $error->setDescription($exception->getMessage());
+            $error->setDescription(rtrim($exception->getMessage(), '.'));
+        } elseif ($exception instanceof DomainRecordNotFoundException) {
+            $statusCode = 404;
+            $error->setType(ActionError::RESOURCE_NOT_FOUND);
+            $error->setDescription(rtrim($exception->getMessage(), '.'));
         } elseif ($exception instanceof HttpException) {
             $statusCode = $exception->getCode();
-            $error->setDescription($exception->getMessage());
+            $error->setDescription(rtrim($exception->getMessage(), '.'));
+
+            $this->logError("", $exception);
 
             if ($exception instanceof HttpNotFoundException) {
                 $error->setType(ActionError::RESOURCE_NOT_FOUND);
@@ -88,7 +95,7 @@ class HttpErrorHandler extends SlimErrorHandler
             && $exception instanceof Throwable
             && $this->displayErrorDetails
         ) {
-            $error->setDescription($exception->getMessage());
+            $error->setDescription(rtrim($exception->getMessage(), '.'));
         }
 
         $payload = new ActionPayload($statusCode, null, $error);
@@ -96,8 +103,10 @@ class HttpErrorHandler extends SlimErrorHandler
 
         /** @var Response $response */
         $response = $this->responseFactory->createResponse($statusCode);
+        $response->getBody()->write(''); // Ensure fresh body
 
         // Inject helper for HTML error views
+        $helper = null;
         if (isset($this->container)) {
             $helper = $this->container->get(Helper::class);
             $response->setHelper($helper);
@@ -119,13 +128,17 @@ class HttpErrorHandler extends SlimErrorHandler
                 return $response->renderHtml('error', [
                     'code' => $statusCode,
                     'message' => $error->getDescription(),
-                    'title' => $title
+                    'title' => $title,
+                    'helper' => $helper
                 ]);
             } catch (Throwable $e) {
                 // If HTML rendering fails, log it and fall back to JSON
-                // We re-use writeToErrorLog with the new exception
+                error_log("CRITICAL: Error while rendering error page: " . $e->getMessage());
                 $this->exception = $e;
                 $this->writeToErrorLog();
+
+                // Ensure body is clean for JSON fallback
+                $response = $this->responseFactory->createResponse($statusCode);
             }
         }
 
@@ -137,9 +150,9 @@ class HttpErrorHandler extends SlimErrorHandler
     /**
      * @inheritdoc
      */
-    protected function logError(string $error): void
+    protected function logError(string $error, ?\Exception $exception = null): void
     {
-        $exception = $this->exception;
+        $exception = !$error && $exception ? $exception : $this->exception;
         $request = $this->request;
 
         // Get the real HTTP code
@@ -159,10 +172,10 @@ class HttpErrorHandler extends SlimErrorHandler
         }
 
         if ($routePattern) {
-            $routePattern = " (Route: {$route}";
+            $routePattern = " (Route: {$routePattern})";
         }
 
-        if ($exception instanceof RouterException) {
+        if ($exception instanceof RouterException || $exception instanceof HttpException) {
             if (!ConfigRegistry::get("log_http_errors")) {
                 return;
             }
@@ -182,7 +195,7 @@ class HttpErrorHandler extends SlimErrorHandler
             $reflection = new \ReflectionClass($exception);
             $exceptionName = $reflection->getShortName();
 
-            $message = $exception->getMessage();
+            $message = rtrim($exception->getMessage(), '.');
 
             // One-line clean summary
             $summary = sprintf("[%d] %s %s%s - %s (%s)", $code, $method, $uri, $routePattern, $message, $exceptionName);

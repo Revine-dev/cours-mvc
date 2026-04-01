@@ -22,23 +22,50 @@ class Response extends SlimResponse
 {
     private ?Helper $helper = null;
 
-    public function setHelper(Helper $helper): void { $this->helper = $helper; }
+    public function setHelper(Helper $helper): void
+    {
+        $this->helper = $helper;
+    }
 
     public function __call(string $name, array $args): mixed
     {
         if ($container = Helper::getContainer()) {
-            return new ViewVariable($container->get(Helper::class)->$name(...$args));
+            // Déballage automatique des arguments si ce sont des ViewVariables
+            $unwrapped = array_map(fn($arg) => ($arg instanceof ViewVariable) ? $arg->dangerousRaw() : $arg, $args);
+
+            return new ViewVariable($container->get(Helper::class)->$name(...$unwrapped));
         }
         throw new BadMethodCallException("Method {$name} called but Helper system not initialized.");
     }
 
-    public function notFound(?string $msg = null): never { throw new NotFoundException($msg ?? 'Not Found'); }
-    public function forbidden(?string $msg = null): never { throw new ForbiddenException($msg ?? 'Forbidden'); }
-    public function unauthorized(?string $msg = null): never { throw new UnauthorizedException($msg ?? 'Unauthorized'); }
-    public function maintenance(?string $msg = null): never { throw new MaintenanceException($msg ?? 'Service Unavailable'); }
-    public function tooManyRequests(?string $msg = null): never { throw new TooManyRequestsException($msg ?? 'Too Many Requests'); }
-    public function error(?string $msg = null): never { throw new InternalErrorException($msg ?? 'Internal Server Error'); }
-    public function unprocessableContent(?string $msg = null): never { throw new UnprocessableContentException($msg ?? 'Unprocessable Content'); }
+    public function notFound(?string $msg = null): never
+    {
+        throw new NotFoundException($msg ?? 'Not Found');
+    }
+    public function forbidden(?string $msg = null): never
+    {
+        throw new ForbiddenException($msg ?? 'Forbidden');
+    }
+    public function unauthorized(?string $msg = null): never
+    {
+        throw new UnauthorizedException($msg ?? 'Unauthorized');
+    }
+    public function maintenance(?string $msg = null): never
+    {
+        throw new MaintenanceException($msg ?? 'Service Unavailable');
+    }
+    public function tooManyRequests(?string $msg = null): never
+    {
+        throw new TooManyRequestsException($msg ?? 'Too Many Requests');
+    }
+    public function error(?string $msg = null): never
+    {
+        throw new InternalErrorException($msg ?? 'Internal Server Error');
+    }
+    public function unprocessableContent(?string $msg = null): never
+    {
+        throw new UnprocessableContentException($msg ?? 'Unprocessable Content');
+    }
 
     public function renderHtml(string $view, array $data = []): self
     {
@@ -48,10 +75,17 @@ class Response extends SlimResponse
         if (!file_exists($viewPath) && !$isRaw) throw new ViewNotFoundException("View template `{$view}` not found.");
 
         $escapedData = [];
-        foreach ($data as $k => $v) $escapedData[$k] = new ViewVariable($v);
+        foreach ($data as $k => $v) {
+            $escapedData[$k] = (is_scalar($v) && empty($v)) || $v === null ? $v : new ViewVariable($v);
+        }
 
         if (!$this->helper && $container = Helper::getContainer()) $this->helper = $container->get(Helper::class);
-        if ($this->helper) $escapedData['helper'] = new ViewVariable($this->helper);
+        if ($this->helper) {
+            $escapedData['helper'] = new ViewVariable($this->helper);
+            if ($user = $this->helper->auth()) {
+                $escapedData['user'] = new ViewVariable($user);
+            }
+        }
 
         $tempFile = null;
         if ($isRaw) {
@@ -66,7 +100,7 @@ class Response extends SlimResponse
             require $viewPath;
             $html = (string) ob_get_clean();
         } catch (Throwable $e) {
-            if (ob_get_level() > 0) ob_end_clean();
+            while (ob_get_level() > 0) ob_end_clean();
             if ($tempFile) @unlink($tempFile);
             throw $e;
         }

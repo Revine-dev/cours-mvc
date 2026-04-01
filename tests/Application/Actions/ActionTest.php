@@ -8,6 +8,7 @@ use App\Application\Actions\Action;
 use App\Application\Actions\ActionPayload;
 use App\Application\Response\Response;
 use App\Application\Helpers\Helper;
+use App\Domain\DomainException\DomainRecordNotFoundException;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 use Tests\TestCase;
@@ -74,7 +75,7 @@ class ActionTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
         $body = (string) $response->getBody();
         $this->assertStringContainsString('RESOURCE_NOT_FOUND', $body);
-        $this->assertStringContainsString('Resource not found.', $body);
+        $this->assertStringContainsString('Resource not found', $body);
     }
 
     public function testActionGlobalNotFound()
@@ -97,7 +98,7 @@ class ActionTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
         $body = (string) $response->getBody();
         $this->assertStringContainsString('RESOURCE_NOT_FOUND', $body);
-        $this->assertStringContainsString('Action not found.', $body);
+        $this->assertStringContainsString('Action not found', $body);
     }
 
     public function testActionHtmlNotFound()
@@ -111,7 +112,7 @@ class ActionTest extends TestCase
             public function action(): Response
             {
                 $msg = 'Page introuvable';
-                return $this->response->renderHtml("<h1>404</h1><p>{$msg}</p>");
+                return $this->render("<h1>404</h1><p>{$msg}</p>");
             }
         };
 
@@ -134,7 +135,8 @@ class ActionTest extends TestCase
         $testAction = new class ($logger, $helper) extends Action {
             public function action(): Response
             {
-                return $this->response->withStatus(403)->renderHtml('<h1>403 Forbidden</h1>');
+                $this->response = $this->response->withStatus(403);
+                return $this->render('<h1>403 Forbidden</h1>');
             }
         };
 
@@ -155,7 +157,7 @@ class ActionTest extends TestCase
         $testAction = new class ($logger, $helper) extends Action {
             public function action(): Response
             {
-                return $this->response->renderHtml('non-existent-view');
+                return $this->render('non-existent-view');
             }
         };
 
@@ -165,6 +167,30 @@ class ActionTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
         $body = (string) $response->getBody();
         $this->assertStringContainsString('500', $body);
-        $this->assertStringContainsString('View template `non-existent-view` not found.', $body);
+        $this->assertStringContainsString('View template `non-existent-view` not found', $body);
+    }
+
+    public function testDomainNotFoundHtml()
+    {
+        $app = $this->getAppInstance();
+        $container = $app->getContainer();
+        $logger = $container->get(LoggerInterface::class);
+        $helper = $container->get(Helper::class);
+
+        $testAction = new class ($logger, $helper) extends Action {
+            public function action(): Response
+            {
+                throw new class('Specific domain item not found') extends DomainRecordNotFoundException {};
+            }
+        };
+
+        $app->get('/test-domain-not-found', $testAction);
+        $request = $this->createRequest('GET', '/test-domain-not-found', ['Accept' => 'text/html']);
+        $response = $app->handle($request);
+        
+        $this->assertEquals(404, $response->getStatusCode());
+        $body = (string) $response->getBody();
+        $this->assertStringContainsString('404', $body);
+        $this->assertStringContainsString('Specific domain item not found', $body);
     }
 }

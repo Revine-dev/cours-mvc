@@ -13,7 +13,7 @@ class InMemoryUserRepositoryTest extends TestCase
 {
     public function testFindAll()
     {
-        $user = new User(1, 'bill.gates', 'Bill', 'Gates');
+        $user = new User(['id' => 1, 'name' => 'Bill Gates', 'email' => 'bill.gates@microsoft.com']);
 
         $userRepository = new InMemoryUserRepository([1 => $user]);
 
@@ -23,11 +23,11 @@ class InMemoryUserRepositoryTest extends TestCase
     public function testFindAllUsersByDefault()
     {
         $users = [
-            1 => new User(1, 'bill.gates', 'Bill', 'Gates'),
-            2 => new User(2, 'steve.jobs', 'Steve', 'Jobs'),
-            3 => new User(3, 'mark.zuckerberg', 'Mark', 'Zuckerberg'),
-            4 => new User(4, 'evan.spiegel', 'Evan', 'Spiegel'),
-            5 => new User(5, 'jack.dorsey', 'Jack', 'Dorsey'),
+            1 => new User(['id' => 1, 'name' => 'Bill Gates', 'email' => 'bill.gates@microsoft.com']),
+            2 => new User(['id' => 2, 'name' => 'Steve Jobs', 'email' => 'steve.jobs@apple.com']),
+            3 => new User(['id' => 3, 'name' => 'Mark Zuckerberg', 'email' => 'mark.zuckerberg@facebook.com']),
+            4 => new User(['id' => 4, 'name' => 'Evan Spiegel', 'email' => 'evan.spiegel@snapchat.com']),
+            5 => new User(['id' => 5, 'name' => 'Jack Dorsey', 'email' => 'jack.dorsey@twitter.com']),
         ];
 
         $userRepository = new InMemoryUserRepository();
@@ -37,7 +37,7 @@ class InMemoryUserRepositoryTest extends TestCase
 
     public function testFindUserOfId()
     {
-        $user = new User(1, 'bill.gates', 'Bill', 'Gates');
+        $user = new User(['id' => 1, 'name' => 'Bill Gates', 'email' => 'bill.gates@microsoft.com']);
 
         $userRepository = new InMemoryUserRepository([1 => $user]);
 
@@ -49,5 +49,20 @@ class InMemoryUserRepositoryTest extends TestCase
         $userRepository = new InMemoryUserRepository([]);
         $this->expectException(UserNotFoundException::class);
         $userRepository->findUserOfId(1);
+    }
+
+    public function testFindOneBy()
+    {
+        $userRepository = new InMemoryUserRepository();
+        $user = $userRepository->findOneBy('name', 'Bill Gates');
+        $this->assertEquals('Bill Gates', $user->name);
+    }
+
+    public function testWhereGet()
+    {
+        $userRepository = new InMemoryUserRepository();
+        $users = $userRepository->where('name', 'Steve Jobs')->get();
+        $this->assertCount(1, $users);
+        $this->assertEquals('Steve Jobs', $users[0]->name);
     }
 }

@@ -20,6 +20,7 @@ return function (ContainerBuilder $containerBuilder) {
         StringHelper::class => function () {
             return new StringHelper();
         },
+        UserHelper::class => \DI\autowire(UserHelper::class),
         LoggerInterface::class => function (ContainerInterface $c) {
             $settings = $c->get(SettingsInterface::class);
 
