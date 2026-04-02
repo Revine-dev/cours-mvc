@@ -8,7 +8,7 @@ use App\Application\Actions\Action;
 use App\Application\Actions\ActionPayload;
 use App\Application\Response\Response;
 use App\Application\Helpers\Helper;
-use App\Domain\DomainException\DomainRecordNotFoundException;
+use App\Entity\EntityException\EntityRecordNotFoundException;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 use Tests\TestCase;
@@ -170,7 +170,7 @@ class ActionTest extends TestCase
         $this->assertStringContainsString('View template `non-existent-view` not found', $body);
     }
 
-    public function testDomainNotFoundHtml()
+    public function testEntityNotFoundHtml()
     {
         $app = $this->getAppInstance();
         $container = $app->getContainer();
@@ -180,17 +180,17 @@ class ActionTest extends TestCase
         $testAction = new class ($logger, $helper) extends Action {
             public function action(): Response
             {
-                throw new class('Specific domain item not found') extends DomainRecordNotFoundException {};
+                throw new class('Specific entity item not found') extends EntityRecordNotFoundException {};
             }
         };
 
-        $app->get('/test-domain-not-found', $testAction);
-        $request = $this->createRequest('GET', '/test-domain-not-found', ['Accept' => 'text/html']);
+        $app->get('/test-entity-not-found', $testAction);
+        $request = $this->createRequest('GET', '/test-entity-not-found', ['Accept' => 'text/html']);
         $response = $app->handle($request);
         
         $this->assertEquals(404, $response->getStatusCode());
         $body = (string) $response->getBody();
         $this->assertStringContainsString('404', $body);
-        $this->assertStringContainsString('Specific domain item not found', $body);
+        $this->assertStringContainsString('Specific entity item not found', $body);
     }
 }

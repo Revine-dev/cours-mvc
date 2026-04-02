@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Application\Helpers;
 
 use App\Application\Response\Exception\HelperException;
-use App\Domain\User\User;
-use App\Domain\User\UserRepository;
+use App\Entity\User\User;
+use App\Entity\User\UserRepository;
 
 class UserHelper
 {

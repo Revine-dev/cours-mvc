@@ -13,6 +13,20 @@ jobs:
         php: [8.5]
         experimental: [false]
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: cours_mvc
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,9 +36,23 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: xdebug
+          extensions: mbstring, pdo, pdo_mysql, intl
 
       - name: Install dependencies with Composer
         uses: ramsey/composer-install@v2
+
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h 127.0.0.1 --silent; do
+            echo "Waiting for database..."
+            sleep 2
+          done
+
+      - name: Configure test environment
+        run: |
+          cp .env.test .env
+          php bin/console doctrine:database:create --env=test || true
+          php bin/console doctrine:schema:create --env=test
 
       - name: Coding standards
         if: matrix.analysis

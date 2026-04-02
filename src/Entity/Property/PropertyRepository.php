@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Property;
+namespace App\Entity\Property;
 
 interface PropertyRepository
 {
@@ -25,9 +25,17 @@ interface PropertyRepository
 
     // --- Query Builder Methods ---
 
+    public function findLatest(int $limit = 3): array;
+
     public function findOneBy(string $key, mixed $value): ?Property;
 
     public function where(string $key, mixed $value): static;
+
+    public function whereLike(string $key, string $value): static;
+
+    public function whereGreaterThanOrEqual(string $key, mixed $value): static;
+
+    public function whereLessThanOrEqual(string $key, mixed $value): static;
 
     public function filter(callable $callback): static;
 

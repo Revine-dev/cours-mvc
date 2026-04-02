@@ -97,7 +97,7 @@
                 <div class="flex flex-wrap gap-3">
                     <?php foreach ($property->amenities as $amenity): ?>
                         <span class="px-4 py-2 bg-background border border-secondary/20 rounded-full text-secondary text-sm font-medium">
-                            <?= $amenity; ?>
+                            <?= $amenity->name; ?>
                         </span>
                     <?php endforeach; ?>
                 </div>

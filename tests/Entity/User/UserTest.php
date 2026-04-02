@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Domain\User;
+namespace Tests\Entity\User;
 
-use App\Domain\User\User;
+use App\Entity\User\User;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -46,7 +46,7 @@ class UserTest extends TestCase
      * @param string $email
      * @param string $role
      */
-    public function testJsonSerialize(int $id, string $name, string $email, string $role)
+    public function testToData(int $id, string $name, string $email, string $role)
     {
         $user = new User([
             'id' => $id,
@@ -55,14 +55,14 @@ class UserTest extends TestCase
             'role' => $role
         ]);
 
-        $expectedPayload = json_encode([
+        $expectedData = [
             'id' => $id,
             'name' => $name,
             'email' => $email,
             'role' => $role,
-        ]);
+        ];
 
-        $this->assertEquals($expectedPayload, json_encode($user));
+        $this->assertEquals($expectedData, $user->toData());
     }
 
     public function testIsAdmin()

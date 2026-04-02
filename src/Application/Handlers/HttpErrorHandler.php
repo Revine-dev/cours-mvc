@@ -20,7 +20,7 @@ use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler as SlimErrorHandler;
 use Slim\Routing\RouteContext;
 use App\Application\Config\ConfigRegistry;
-use App\Domain\DomainException\DomainRecordNotFoundException;
+use App\Entity\EntityException\EntityRecordNotFoundException;
 use Throwable;
 
 class HttpErrorHandler extends SlimErrorHandler
@@ -65,7 +65,7 @@ class HttpErrorHandler extends SlimErrorHandler
             $statusCode = $exception->getStatusCode();
             $error->setType($exception->getErrorType());
             $error->setDescription(rtrim($exception->getMessage(), '.'));
-        } elseif ($exception instanceof DomainRecordNotFoundException) {
+        } elseif ($exception instanceof EntityRecordNotFoundException) {
             $statusCode = 404;
             $error->setType(ActionError::RESOURCE_NOT_FOUND);
             $error->setDescription(rtrim($exception->getMessage(), '.'));

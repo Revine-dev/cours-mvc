@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use App\Application\Response\Response;
 use App\Application\Helpers\Helper;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Domain\User\UserRepository;
+use App\Entity\User\UserRepository;
 
 class UserAction extends Action
 {
@@ -26,13 +26,13 @@ class UserAction extends Action
         return password_hash($password, PASSWORD_DEFAULT);
     }
 
-    private function isExistingUser(string $email, string $password): ?\App\Domain\User\User
+    private function isExistingUser(string $email, string $password): ?\App\Entity\User\User
     {
         $user = $this->usersRepository->findOneBy('email', $email);
         return ($user && password_verify($password, $user->password)) ? $user : null;
     }
 
-    private function createSession(\App\Domain\User\User $user): void
+    private function createSession(\App\Entity\User\User $user): void
     {
         // Regenerate session ID to prevent session fixation attacks
         if (session_status() === PHP_SESSION_ACTIVE) {

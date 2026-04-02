@@ -14,7 +14,7 @@
 - **Do not create or modify the `app` folder.**
 - Respect the existing **MVC structure**:
   - Controllers → application logic.
-  - Models → data access and domain logic.
+  - Models → data access and entity logic.
   - Views → HTML rendering only (no business logic).
 - Prefer editing existing files over creating new ones unless the feature clearly requires new classes or views.
 - If you update core structure, make sure you do not alterate Slim structure too much, keep it simple as possible and reusable, also run test afterwards using phpunit to prevent any errors
@@ -37,6 +37,10 @@ All routes are accessible in `app/routes.php`
 ## Controller
 
 All controller are located in `src/Application/Actions/`
+
+## Models
+
+Models are loaded through Doctrine ORM
 
 ## View rendering
 

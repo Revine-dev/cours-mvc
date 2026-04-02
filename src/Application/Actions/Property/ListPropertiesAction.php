@@ -6,7 +6,7 @@ namespace App\Application\Actions\Property;
 
 use App\Application\Actions\Action;
 use App\Application\Response\Response;
-use App\Domain\Property\PropertyRepository;
+use App\Entity\Property\PropertyRepository;
 use App\Application\Helpers\Helper;
 use Psr\Log\LoggerInterface;
 
@@ -26,27 +26,27 @@ class ListPropertiesAction extends Action
     protected function action(): Response
     {
         $queryParams = $this->request->getQueryParams();
-        
+
         $query = $this->propertyRepository;
 
-        // Filtre par type
-        if (!empty($queryParams['type'])) {
+        // Filter by type
+        if (!empty($queryParams['type'] ?? null)) {
             $query->where('type', $queryParams['type']);
         }
 
-        // Filtre par ville (insensible à la casse simplifié)
-        if (!empty($queryParams['city'])) {
-            $query->filter(fn($item) => stripos($item['location']['city'], $queryParams['city']) !== false);
+        // Filter by city (case-insensitive)
+        if (!empty($queryParams['city'] ?? null)) {
+            $query->whereLike('l.city', $queryParams['city']);
         }
 
-        // Filtre par prix min
-        if (!empty($queryParams['min_price'])) {
-            $query->filter(fn($item) => $item['price'] >= (int)$queryParams['min_price']);
+        // Filter by minimum price
+        if (!empty($queryParams['min_price'] ?? null)) {
+            $query->whereGreaterThanOrEqual('price', (int)$queryParams['min_price']);
         }
 
-        // Filtre par prix max
-        if (!empty($queryParams['max_price'])) {
-            $query->filter(fn($item) => $item['price'] <= (int)$queryParams['max_price']);
+        // Filter by maximum price
+        if (!empty($queryParams['max_price'] ?? null)) {
+            $query->whereLessThanOrEqual('price', (int)$queryParams['max_price']);
         }
 
         $properties = $query->latest()->get();

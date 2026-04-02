@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Actions;
 
-use App\Domain\DomainException\DomainRecordNotFoundException;
+use App\Entity\EntityException\EntityRecordNotFoundException;
 use App\Application\Response\Response;
 use App\Application\Helpers\Helper;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -47,7 +47,7 @@ abstract class Action
 
         try {
             return $this->action();
-        } catch (DomainRecordNotFoundException $e) {
+        } catch (EntityRecordNotFoundException $e) {
             $this->response->notFound($e->getMessage());
         }
     }
@@ -65,7 +65,7 @@ abstract class Action
     }
 
     /**
-     * @throws DomainRecordNotFoundException
+     * @throws EntityRecordNotFoundException
      * @throws HttpBadRequestException
      */
     abstract protected function action(): Response;

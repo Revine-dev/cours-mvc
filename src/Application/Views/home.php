@@ -71,7 +71,8 @@
                                 </h3>
                                 <p class="text-secondary text-sm mt-1"><?= $property->location->address; ?>, <?= $property->location->city; ?></p>
                             </div>
-                            </div>                        <div class="mt-auto pt-4 border-t border-secondary/20 flex gap-4 text-sm text-secondary">
+                        </div>
+                        <div class="mt-auto pt-4 border-t border-secondary/20 flex gap-4 text-sm text-secondary">
                             <span class="flex items-center gap-1.5"><i class="fa-solid fa-bed text-accent text-xs"></i> <?= $property->features->bedrooms; ?> Ch.</span>
                             <span class="flex items-center gap-1.5"><i class="fa-solid fa-bath text-accent text-xs"></i> <?= $property->features->bathrooms; ?> S.d.B</span>
                             <span class="flex items-center gap-1.5"><i class="fa-solid fa-vector-square text-accent text-xs"></i> <?= $property->features->area; ?> m²</span>

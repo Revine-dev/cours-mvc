@@ -11,7 +11,7 @@ return [
     | Usually "localhost" for local development.
     |
     */
-    'db_host' => getenv('DB_HOST') ?: 'localhost',
+    'db_host' => getenv('DB_HOST') ?: '127.0.0.1',
 
 
     /*
@@ -43,7 +43,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Your database password.
-    | Leave empty if no password is set locally.
+    | Default password: "root".
     |
     */
     'db_pass' => getenv('DB_PASS') ?: '',
@@ -58,7 +58,19 @@ return [
     | Default MySQL port is 3306.
     |
     */
-    'db_port' => getenv('DB_PORT') ?: '3306',
+    'db_port' => getenv('DB_PORT') ?: 3306,
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database Charset
+    |--------------------------------------------------------------------------
+    |
+    | The charset
+    | Default MySQL charset is utf8mb4.
+    |
+    */
+    'db_charset' => getenv('DB_CHARSET') ?: 'utf8mb4',
 
 
     /*

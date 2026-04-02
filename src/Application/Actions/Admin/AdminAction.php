@@ -6,8 +6,8 @@ namespace App\Application\Actions\Admin;
 
 use App\Application\Actions\Action;
 use App\Application\Response\Response;
-use App\Domain\Property\PropertyRepository;
-use App\Domain\User\UserRepository;
+use App\Entity\Property\PropertyRepository;
+use App\Entity\User\UserRepository;
 
 use App\Application\Helpers\Helper;
 use Psr\Log\LoggerInterface;
@@ -70,7 +70,7 @@ class AdminAction extends Action
     public function create(Request $request, Response $response, array $args): Response
     {
         $this->init($request, $response, $args);
-        $ad = new \App\Domain\Property\Property([
+        $ad = new \App\Entity\Property\Property([
             'id' => 0,
             'title' => '',
             'description' => '',

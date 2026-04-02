@@ -11,9 +11,23 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use App\Application\Helpers\Helper;
 use App\Application\Helpers\StringHelper;
+use App\Application\Helpers\UserHelper;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
+use Doctrine\DBAL\DriverManager;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
+        EntityManager::class => function (ContainerInterface $c) {
+            $settings = $c->get(SettingsInterface::class)->get('doctrine');
+            $config = ORMSetup::createAttributeMetadataConfiguration(
+                $settings['metadata_dirs'],
+                $settings['dev_mode'],
+                $settings['cache_dir'] . '/proxy'
+            );
+            $connection = DriverManager::getConnection($settings['connection'], $config);
+            return new EntityManager($connection, $config);
+        },
         Helper::class => function (ContainerInterface $c) {
             return new Helper($c);
         },

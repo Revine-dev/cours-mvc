@@ -22,6 +22,20 @@ return function (ContainerBuilder $containerBuilder) {
                     'path' => isset($_ENV['docker']) ? 'php://stdout' : ROOT . '/logs/app.log',
                     'level' => Logger::DEBUG,
                 ],
+                'doctrine' => [
+                    'dev_mode' => true,
+                    'cache_dir' => ROOT . '/var/cache/doctrine',
+                    'metadata_dirs' => [ROOT . '/src/Entity'],
+                    'connection' => [
+                        'driver'   => 'pdo_mysql',
+                        'host'     => ConfigRegistry::get("db_host"),
+                        'port'     => ConfigRegistry::get("db_port"),
+                        'dbname'   => ConfigRegistry::get("db_name"),
+                        'user'     => ConfigRegistry::get("db_user"),
+                        'password' => ConfigRegistry::get("db_pass"),
+                        'charset'  => ConfigRegistry::get("db_charset"),
+                    ],
+                ],
             ]);
         }
     ]);

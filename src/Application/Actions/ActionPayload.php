@@ -53,11 +53,30 @@ class ActionPayload implements JsonSerializable
         ];
 
         if ($this->data !== null) {
-            $payload['data'] = $this->data;
+            $payload['data'] = $this->serializeData($this->data);
         } elseif ($this->error !== null) {
             $payload['error'] = $this->error;
         }
 
         return $payload;
+    }
+
+    private function serializeData($data): mixed
+    {
+        if (is_array($data)) {
+            return array_map([$this, 'serializeData'], $data);
+        }
+
+        if (is_object($data)) {
+            if (method_exists($data, 'toData')) {
+                return $data->toData();
+            }
+
+            if (method_exists($data, 'toArray')) {
+                return $data->toArray();
+            }
+        }
+
+        return $data;
     }
 }
