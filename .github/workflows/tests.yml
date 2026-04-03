@@ -53,7 +53,6 @@ jobs:
           # Create a .env file with the database connection string
           # Note: 'mysql' is the hostname of your service, but since you 
           # mapped ports to 3306:3306, 127.0.0.1 also works.
-          echo "APP_ENV=test" >> .env
 
           # Now run your database commands
           php bin/console doctrine:database:create --env=test --if-not-exists

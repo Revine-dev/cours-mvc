@@ -31,7 +31,6 @@ return function (App $app) {
     $app->get('/vente/{city}/{slug}', ViewPropertyAction::class)->setName("view-property");
 
     $app->map(['GET', 'POST'], '/back-office', UserAction::class)->setName("login");
-    $app->get('/logout', UserAction::class . ':logout')->setName("logout");
 
     $app->group('/admin', function (Group $group) {
         $group->get('', AdminAction::class)->setName("admin");
@@ -48,5 +47,7 @@ return function (App $app) {
         $group->get('/agents/edit/{id}', AdminAction::class . ':editAgent')->setName("edit-agent");
         $group->post('/agents/edit/{id}', AdminAction::class . ':updateAgent')->setName("update-agent");
         $group->post('/agents/delete/{id}', AdminAction::class . ':deleteAgent')->setName("delete-agent");
+
+        $group->get('/logout', UserAction::class . ':logout')->setName("logout");
     })->add(IsAdminMiddleware::class);
 };
