@@ -68,6 +68,8 @@ class DoctrinePropertyRepository implements PropertyRepository
     public function findLatest(int $limit = 3): array
     {
         $query = $this->getBaseQueryBuilder()
+            ->andWhere('p.status IN (:statuses)')
+            ->setParameter('statuses', ['for_sale', 'compromise'])
             ->orderBy('p.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery();
@@ -90,6 +92,18 @@ class DoctrinePropertyRepository implements PropertyRepository
         }
         $this->qb->andWhere("p.$key = :$key")
             ->setParameter($key, $value);
+        return $this;
+    }
+
+    public function whereIn(string $key, array $values): static
+    {
+        if ($this->qb === null) {
+            $this->qb = $this->getBaseQueryBuilder();
+        }
+        $paramName = str_replace('.', '_', $key) . '_in';
+        $field = strpos($key, '.') !== false ? $key : "p.$key";
+        $this->qb->andWhere($this->qb->expr()->in($field, ":$paramName"))
+            ->setParameter($paramName, $values);
         return $this;
     }
 
@@ -163,5 +177,17 @@ class DoctrinePropertyRepository implements PropertyRepository
 
         $this->qb = null;
         return $results;
+    }
+
+    public function save(Property $property): void
+    {
+        $this->em->persist($property);
+        $this->em->flush();
+    }
+
+    public function delete(Property $property): void
+    {
+        $this->em->remove($property);
+        $this->em->flush();
     }
 }

@@ -27,8 +27,8 @@ return function (App $app) {
     $app->get('/estimer-mon-bien', function (Request $request, Response $response) {
         return $response->renderHtml("estimate");
     })->setName("estimate");
-    $app->get('/proprietes', ListPropertiesAction::class)->setName("properties");
-    $app->get('/propriete/{city}/{slug}', ViewPropertyAction::class)->setName("view-property");
+    $app->get('/vente', ListPropertiesAction::class)->setName("properties");
+    $app->get('/vente/{city}/{slug}', ViewPropertyAction::class)->setName("view-property");
 
     $app->map(['GET', 'POST'], '/back-office', UserAction::class)->setName("login");
     $app->get('/logout', UserAction::class . ':logout')->setName("logout");
@@ -40,6 +40,13 @@ return function (App $app) {
         $group->post('/ads/create', AdminAction::class . ':store')->setName("store-ad");
         $group->get('/ads/edit/{id}', AdminAction::class . ':edit')->setName("edit-ad");
         $group->post('/ads/edit/{id}', AdminAction::class . ':update')->setName("update-ad");
-        $group->get('/ads/preview/{id}', AdminAction::class . ':preview')->setName("preview-ad");
+        $group->post('/ads/preview[/{id}]', AdminAction::class . ':preview')->setName("preview-ad");
+
+        $group->get('/agents', AdminAction::class . ':listAgents')->setName("agents");
+        $group->get('/agents/create', AdminAction::class . ':createAgent')->setName("create-agent");
+        $group->post('/agents/create', AdminAction::class . ':storeAgent')->setName("store-agent");
+        $group->get('/agents/edit/{id}', AdminAction::class . ':editAgent')->setName("edit-agent");
+        $group->post('/agents/edit/{id}', AdminAction::class . ':updateAgent')->setName("update-agent");
+        $group->post('/agents/delete/{id}', AdminAction::class . ':deleteAgent')->setName("delete-agent");
     })->add(IsAdminMiddleware::class);
 };

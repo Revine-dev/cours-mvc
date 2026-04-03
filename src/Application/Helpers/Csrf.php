@@ -81,10 +81,11 @@ class Csrf
      * @param string|null $formId The form identifier submitted
      * @param string|null $token The token to validate
      * @param bool $rotateSession Whether to regenerate session ID on success
+     * @param bool $isOneTime Whether to remove the token after validation (one-time use), defaults to false to allow multiple submissions from the same page.
      * @return bool True if valid
      * @throws ExpiredPageException If token is invalid or expired (HTTP 419)
      */
-    public static function validateToken(?string $formId, ?string $token, bool $rotateSession = true): bool
+    public static function validateToken(?string $formId, ?string $token, bool $rotateSession = false, bool $isOneTime = false): bool
     {
         if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
             session_start();
@@ -105,11 +106,14 @@ class Csrf
 
         $stored = $_SESSION[self::SESSION_KEY][$formId];
 
-        // 1. One-time use: Remove token immediately
-        unset($_SESSION[self::SESSION_KEY][$formId]);
+        // 1. One-time use: Removed by default, but optional
+        if ($isOneTime) {
+            unset($_SESSION[self::SESSION_KEY][$formId]);
+        }
 
         // 2. Check expiration
         if (time() > $stored['expires']) {
+            unset($_SESSION[self::SESSION_KEY][$formId]);
             throw new ExpiredPageException('CSRF token has expired.');
         }
 

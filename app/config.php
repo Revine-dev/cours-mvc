@@ -46,7 +46,7 @@ return [
     | Default password: "root".
     |
     */
-    'db_pass' => getenv('DB_PASS') ?: '',
+    'db_pass' => getenv('DB_PASS') ?: 'root',
 
 
     /*

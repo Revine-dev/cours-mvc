@@ -31,6 +31,8 @@ interface PropertyRepository
 
     public function where(string $key, mixed $value): static;
 
+    public function whereIn(string $key, array $values): static;
+
     public function whereLike(string $key, string $value): static;
 
     public function whereGreaterThanOrEqual(string $key, mixed $value): static;
@@ -47,4 +49,8 @@ interface PropertyRepository
      * @return Property[]
      */
     public function get(): array;
+
+    public function save(Property $property): void;
+
+    public function delete(Property $property): void;
 }

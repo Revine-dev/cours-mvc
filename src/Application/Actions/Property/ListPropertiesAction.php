@@ -29,6 +29,9 @@ class ListPropertiesAction extends Action
 
         $query = $this->propertyRepository;
 
+        // Filter by status (public view only shows available or under compromise)
+        $query->whereIn('status', ['for_sale', 'compromise']);
+
         // Filter by type
         if (!empty($queryParams['type'] ?? null)) {
             $query->where('type', $queryParams['type']);

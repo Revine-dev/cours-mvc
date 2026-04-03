@@ -18,7 +18,16 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-secondary mb-1.5">Titre de l'annonce</label>
-                    <input type="text" name="title" value="<?= $ad->title ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                    <input type="text" id="title-input" name="title" value="<?= $ad->title ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-1.5">Lien de l'annonce (Slug)</label>
+                    <div class="flex items-center gap-2">
+                        <span id="city-slug-prefix" class="text-secondary/50 text-sm italic">/vente/<?= !empty((string) $ad->location->city) ? strtolower(preg_replace('/[^A-Za-z0-9]+/', '-', iconv('UTF-8', 'ASCII//TRANSLIT', (string)$ad->location->city))) : '...' ?>/</span>
+                        <input type="text" id="slug-input" name="slug" value="<?= $ad->slug ?>" class="flex-1 px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none text-sm" placeholder="mon-super-bien-immobilier">
+                    </div>
+                    <p class="text-xs text-secondary/60 mt-1 italic">Laissez vide pour générer automatiquement à partir du titre.</p>
                 </div>
 
                 <div>
@@ -29,7 +38,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-secondary mb-1.5">Prix (€)</label>
-                        <input type="number" name="price" value="<?= $ad->price ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                        <input type="text" id="price-display" value="<?= $ad->price ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all" placeholder="0">
+                        <input type="hidden" name="price" id="price-real" value="<?= $ad->price ?>">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-secondary mb-1.5">Type de bien</label>
@@ -47,17 +57,17 @@
             <div class="space-y-4">
                 <div class="relative" id="address-container">
                     <label class="block text-sm font-medium text-secondary mb-1.5">Adresse</label>
-                    <input type="text" name="address" id="address-input" autocomplete="off" value="<?= $ad->location['address'] ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                    <input type="text" name="address" id="address-input" autocomplete="off" value="<?= $ad->location->address ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
                     <div id="address-results" class="absolute z-50 w-full mt-1 bg-background border border-secondary/20 rounded-xl shadow-lg hidden overflow-hidden"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-secondary mb-1.5">Ville</label>
-                        <input type="text" name="city" value="<?= $ad->location['city'] ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                        <input type="text" name="city" readonly value="<?= $ad->location->city ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-secondary mb-1.5">Code postal</label>
-                        <input type="text" name="postal_code" value="<?= $ad->location['postal_code'] ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                        <input type="text" name="postal_code" readonly value="<?= $ad->location->postal_code ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
                     </div>
                 </div>
             </div>
@@ -65,6 +75,23 @@
     </div>
 
     <div class="space-y-6">
+        <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
+            <h2 class="text-lg font-semibold text-primary mb-6">Images de l'annonce</h2>
+            <div id="images-container" class="space-y-3 mb-4">
+                <?php foreach ($ad->images as $img): ?>
+                    <div class="flex gap-2 image-row">
+                        <input type="text" name="images[]" value="<?= $img ?>" class="flex-1 px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none text-sm" placeholder="URL de l'image">
+                        <button type="button" onclick="this.parentElement.remove()" class="w-10 h-10 flex items-center justify-center text-secondary hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                            <i class="fa-solid fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" id="add-image" class="w-full py-2.5 border-2 border-dashed border-secondary/20 rounded-xl text-secondary hover:text-accent hover:border-accent/50 hover:bg-accent/5 transition-all text-sm font-medium flex items-center justify-center gap-2">
+                <i class="fa-solid fa-plus"></i> Ajouter une image (URL)
+            </button>
+        </div>
+
         <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
             <h2 class="text-lg font-semibold text-primary mb-6">Statut de l'annonce</h2>
             <div class="space-y-4">
@@ -78,12 +105,24 @@
                 <button type="submit" class="w-full bg-accent hover:bg-primary text-background px-5 py-3 rounded-xl font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
                     <i class="fa-solid fa-check"></i> <?= $isNewVal ? 'Créer l\'annonce' : 'Enregistrer les modifications' ?>
                 </button>
-                
-                <?php if (!$isNewVal): ?>
-                <a href="<?= $this->route('preview-ad', ['id' => $ad->id]) ?>" target="_blank" class="w-full bg-background border border-secondary/20 text-secondary hover:bg-secondary/5 px-5 py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+
+                <button type="submit" formaction="<?= $this->route('preview-ad', ['id' => $ad->id]) ?>" formtarget="_blank" class="w-full bg-background border border-secondary/20 text-secondary hover:bg-secondary/5 px-5 py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
                     <i class="fa-solid fa-eye"></i> Aperçu de l'annonce
-                </a>
-                <?php endif; ?>
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
+            <h2 class="text-lg font-semibold text-primary mb-6">Agent immobilier</h2>
+            <div class="space-y-4">
+                <select name="agent_id" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all appearance-none">
+                    <option value="">-- Sélectionner un agent --</option>
+                    <?php foreach ($agents as $agent): ?>
+                        <option value="<?= $agent->id ?>" <?= $ad->agent && $ad->agent->id == $agent->id ? 'selected' : '' ?>>
+                            <?= $agent->name ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
         </div>
 
@@ -92,15 +131,15 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-secondary mb-1.5">Surface (m²)</label>
-                    <input type="number" name="features[area]" value="<?= $ad->features['area'] ?>" class="w-full px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none">
+                    <input type="number" name="features[area]" value="<?= $ad->features->area ?>" class="w-full px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-secondary mb-1.5">Chambres</label>
-                    <input type="number" name="features[bedrooms]" value="<?= $ad->features['bedrooms'] ?>" class="w-full px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none">
+                    <input type="number" name="features[bedrooms]" value="<?= $ad->features->bedrooms ?>" class="w-full px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-secondary mb-1.5">Année de construction</label>
-                    <input type="number" name="features[year_built]" value="<?= $ad->features['year_built'] ?>" class="w-full px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none">
+                    <input type="number" name="features[year_built]" value="<?= $ad->features->year_built ?>" class="w-full px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none">
                 </div>
             </div>
         </div>
@@ -113,6 +152,18 @@
         const results = document.getElementById('address-results');
         const cityInput = document.querySelector('input[name="city"]');
         const zipInput = document.querySelector('input[name="postal_code"]');
+        const cityPrefix = document.getElementById('city-slug-prefix');
+
+        const slugify = (text) => {
+            return text.toString().toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-')
+                .replace(/^-+/, '')
+                .replace(/-+$/, '');
+        };
 
         input.addEventListener('input', async (e) => {
             const query = e.target.value;
@@ -135,6 +186,9 @@
                             input.value = feature.properties.name;
                             cityInput.value = feature.properties.city;
                             zipInput.value = feature.properties.postcode;
+                            if (cityPrefix) {
+                                cityPrefix.textContent = `/vente/${slugify(feature.properties.city)}/`;
+                            }
                             results.classList.add('hidden');
                         };
                         results.appendChild(div);
@@ -147,6 +201,56 @@
                 console.error('Error fetching addresses:', error);
             }
         });
+
+        // Price formatting logic
+        const priceDisplay = document.getElementById('price-display');
+        const priceReal = document.getElementById('price-real');
+
+        if (priceDisplay && priceReal) {
+            const formatPrice = (val) => {
+                return val.toString().replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            };
+
+            if (priceDisplay.value) {
+                priceDisplay.value = formatPrice(priceDisplay.value);
+            }
+
+            priceDisplay.addEventListener('input', (e) => {
+                const rawValue = e.target.value.replace(/\D/g, '');
+                priceReal.value = rawValue;
+                e.target.value = formatPrice(rawValue);
+            });
+        }
+
+        // Auto-slug logic
+        const titleInput = document.getElementById('title-input');
+        const slugInput = document.getElementById('slug-input');
+
+        if (titleInput && slugInput) {
+            titleInput.addEventListener('input', (e) => {
+                // Only update slug automatically if it was empty or matches the old title's slug
+                slugInput.value = slugify(e.target.value);
+            });
+        }
+
+        // Image adding logic
+        const addImageBtn = document.getElementById('add-image');
+        const imagesContainer = document.getElementById('images-container');
+
+        if (addImageBtn && imagesContainer) {
+            addImageBtn.addEventListener('click', () => {
+                const div = document.createElement('div');
+                div.className = 'flex gap-2 image-row';
+                div.innerHTML = `
+                    <input type="text" name="images[]" class="flex-1 px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none text-sm" placeholder="URL de l'image">
+                    <button type="button" onclick="this.parentElement.remove()" class="w-10 h-10 flex items-center justify-center text-secondary hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                        <i class="fa-solid fa-trash text-sm"></i>
+                    </button>
+                `;
+                imagesContainer.appendChild(div);
+                div.querySelector('input').focus();
+            });
+        }
 
         document.addEventListener('click', (e) => {
             if (!document.getElementById('address-container').contains(e.target)) {

@@ -10,9 +10,16 @@
                 <span class="mx-2">/</span>
                 <span class="text-secondary"><?= $property->title; ?></span>
             </nav>
-            <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-primary mb-2">
-                <?= $property->title; ?>
-            </h1>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-2">
+                <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-primary">
+                    <?= $property->title; ?>
+                </h1>
+                <?php if ((string) $property->status === 'compromise'): ?>
+                    <span class="px-3 py-1 bg-success text-background text-xs font-bold uppercase tracking-widest rounded-full shadow-sm">
+                        Sous compromis
+                    </span>
+                <?php endif; ?>
+            </div>
             <p class="text-lg text-secondary flex items-center gap-2">
                 <i class="fa-solid fa-location-dot text-accent"></i>
                 <?= $property->location->address; ?>, <?= $property->location->city; ?> (<?= $property->location->postal_code; ?>)

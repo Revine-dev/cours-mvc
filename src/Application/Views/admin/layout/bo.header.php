@@ -71,14 +71,19 @@
                         <i class="fa-solid fa-building w-5"></i> Annonces
                     </a>
                 </li>
+                <li>
+                    <a href="<?= $this->route("agents"); ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-lg <?= $classActiveNav('agents', 'create-agent', 'edit-agent'); ?> transition-colors text-sm font-medium">
+                        <i class="fa-solid fa-users w-5"></i> Agents
+                    </a>
+                </li>
             </ul>
 
             <div class="mt-8 px-6 text-xs font-semibold text-background/40 uppercase tracking-wider mb-2">Configuration</div>
             <ul class="space-y-1 px-3">
                 <li>
-                    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-background/70 hover:bg-background/10 hover:text-background transition-colors text-sm font-medium">
-                        <i class="fa-solid fa-sliders w-5"></i> Paramètres
-                    </a>
+                    <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-background/70 opacity-20 hover:cursor-not-allowed text-sm font-medium">
+                        <i class="fa-solid fa-sliders w-5"></i> Paramètres (indisponible)
+                    </div>
                 </li>
             </ul>
         </nav>
@@ -106,17 +111,31 @@
                 <a href="<?= $this->route("admin"); ?>" class="text-secondary">Dashboard</a>
                 <?php if (!(string) $this->isActiveRoute("admin")): ?>
                     <i class="fa-solid fa-chevron-right text-secondary/50 mx-2 text-xs"></i>
+
                     <?php if (in_array($this->getCurrentRoute(), ['ads', 'create-ad', 'edit-ad'])): ?>
                         <?php if ((string) $this->isActiveRoute("ads")): ?>
                             <span class="font-medium text-primary">Gestion des Annonces</span>
                         <?php else: ?>
                             <a href="<?= $this->route("ads"); ?>" class="text-secondary">Gestion des Annonces</a>
                         <?php endif; ?>
+                        <?php if (in_array($this->getCurrentRoute(), ['create-ad', 'edit-ad'])): ?>
+                            <i class="fa-solid fa-chevron-right text-secondary/50 mx-2 text-xs"></i>
+                            <span class="font-medium text-primary"><?= $this->getCurrentRoute() === "create-ad" ? "Création d'une annonce" : "Modification d'une annonce"; ?></span>
+                        <?php endif; ?>
                     <?php endif; ?>
-                    <?php if (in_array($this->getCurrentRoute(), ['create-ad', 'edit-ad'])): ?>
-                        <i class="fa-solid fa-chevron-right text-secondary/50 mx-2 text-xs"></i>
-                        <span class="font-medium text-primary"><?= $this->getCurrentRoute() === "edit-ad" ? "Création d'une annonce" : "Modification d'une annonce"; ?></span>
+
+                    <?php if (in_array($this->getCurrentRoute(), ['agents', 'create-agent', 'edit-agent'])): ?>
+                        <?php if ((string) $this->isActiveRoute("agents")): ?>
+                            <span class="font-medium text-primary">Gestion des Agents</span>
+                        <?php else: ?>
+                            <a href="<?= $this->route("agents"); ?>" class="text-secondary">Gestion des Agents</a>
+                        <?php endif; ?>
+                        <?php if (in_array($this->getCurrentRoute(), ['create-agent', 'edit-agent'])): ?>
+                            <i class="fa-solid fa-chevron-right text-secondary/50 mx-2 text-xs"></i>
+                            <span class="font-medium text-primary"><?= $this->getCurrentRoute() === "create-agent" ? "Ajouter un agent" : "Modifier un agent"; ?></span>
+                        <?php endif; ?>
                     <?php endif; ?>
+
                 <?php endif; ?>
             </div>
         </header>

@@ -63,6 +63,11 @@
                                 <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-bold text-primary uppercase tracking-widest shadow-sm">
                                     <?= $property->type; ?>
                                 </div>
+                                <?php if ($property->status == 'compromise'): ?>
+                                    <div class="absolute top-3 right-3 bg-success text-background px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest shadow-sm">
+                                        Sous compromis
+                                    </div>
+                                <?php endif; ?>
                             </div>
                             <div class="p-6">
                                 <div class="mb-4">

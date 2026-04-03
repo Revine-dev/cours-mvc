@@ -46,7 +46,12 @@ class Property implements Entity
     public \DateTime $createdAt;
 
     #[ORM\Column(type: 'datetime', name: 'updated_at')]
-    public \DateTime $updatedAt;
+    public ?\DateTime $updatedAt;
+
+    /**
+     * @var array|null Transient images for preview
+     */
+    public ?array $tempImages = null;
 
     // --- Features ---
     #[ORM\Column(type: 'integer', nullable: true)]
@@ -93,7 +98,7 @@ class Property implements Entity
 
     // --- Relationships ---
 
-    #[ORM\ManyToOne(targetEntity: Location::class)]
+    #[ORM\ManyToOne(targetEntity: Location::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'location_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     protected ?Location $location = null;
 
@@ -104,7 +109,7 @@ class Property implements Entity
     /**
      * @var Collection
      */
-    #[ORM\OneToMany(targetEntity: PropertyImage::class, mappedBy: 'property', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: PropertyImage::class, mappedBy: 'property', cascade: ['persist', 'remove'], orphanRemoval: true)]
     protected Collection $propertyImages;
 
     /**
@@ -133,9 +138,14 @@ class Property implements Entity
     {
         if ($name === 'images') {
             if (!isset($this->propertyImages) || $this->propertyImages->isEmpty()) {
-                return ['https://placehold.co/800x600?text=No+Image'];
+                return [];
             }
             return array_map(fn($img) => $img->imageUrl, $this->propertyImages->toArray());
+        }
+
+        if ($name === 'images_with_placeholder') {
+            $images = $this->__get('images');
+            return empty($images) ? ['https://placehold.co/800x600?text=No+Image'] : $images;
         }
 
         if ($name === 'location') {
@@ -180,6 +190,66 @@ class Property implements Entity
         }
 
         return null;
+    }
+
+    /**
+     * Magic setter for backward compatibility and ease of use.
+     */
+    public function __set(string $name, mixed $value): void
+    {
+        if ($name === 'images') {
+            $this->tempImages = (array) $value;
+            return;
+        }
+
+        if ($name === 'price') {
+            $this->price = (string) $value;
+            return;
+        }
+
+        if ($name === 'area') {
+            $this->area = (string) $value;
+            return;
+        }
+
+        if ($name === 'landArea') {
+            $this->landArea = (string) $value;
+            return;
+        }
+
+        if ($name === 'features') {
+            if (is_array($value)) {
+                $this->bedrooms = isset($value['bedrooms']) ? (int) $value['bedrooms'] : $this->bedrooms;
+                $this->bathrooms = isset($value['bathrooms']) ? (int) $value['bathrooms'] : $this->bathrooms;
+                $this->area = isset($value['area']) ? (string) $value['area'] : $this->area;
+                $this->landArea = isset($value['land_area']) ? (string) $value['land_area'] : $this->landArea;
+                $this->floor = isset($value['floor']) ? (int) $value['floor'] : $this->floor;
+                $this->floors = isset($value['floors']) ? (int) $value['floors'] : $this->floors;
+                $this->totalUnits = isset($value['total_units']) ? (int) $value['total_units'] : $this->totalUnits;
+                $this->yearBuilt = isset($value['year_built']) ? (int) $value['year_built'] : $this->yearBuilt;
+                $this->garage = isset($value['garage']) ? (bool) $value['garage'] : $this->garage;
+                $this->parking = isset($value['parking']) ? (bool) $value['parking'] : $this->parking;
+                $this->furnished = isset($value['furnished']) ? (bool) $value['furnished'] : $this->furnished;
+                $this->elevator = isset($value['elevator']) ? (bool) $value['elevator'] : $this->elevator;
+            }
+            return;
+        }
+
+        if (property_exists($this, $name)) {
+            $this->$name = $value;
+        }
+    }
+
+    public function setImages(array $imageUrls): void
+    {
+        $this->propertyImages->clear();
+        foreach ($imageUrls as $url) {
+            if (empty($url)) continue;
+            $image = new PropertyImage();
+            $image->imageUrl = $url;
+            $image->setProperty($this);
+            $this->propertyImages->add($image);
+        }
     }
 
     /**

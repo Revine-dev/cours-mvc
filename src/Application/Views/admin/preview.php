@@ -15,12 +15,19 @@
                 <span class="mx-2">/</span>
                 <span class="text-secondary"><?= $ad->title; ?></span>
             </nav>
-            <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-primary mb-2">
-                <?= $ad->title; ?>
-            </h1>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-2">
+                <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-primary">
+                    <?= $ad->title; ?>
+                </h1>
+                <?php if ((string) $ad->status == 'compromise'): ?>
+                    <span class="px-3 py-1 bg-success text-background text-xs font-bold uppercase tracking-widest rounded-full shadow-sm">
+                        Sous compromis
+                    </span>
+                <?php endif; ?>
+            </div>
             <p class="text-lg text-secondary flex items-center gap-2">
                 <i class="fa-solid fa-location-dot text-accent"></i>
-                <?= $ad->location['address']; ?>, <?= $ad->location['city']; ?> (<?= $ad->location['postal_code']; ?>)
+                <?= $ad->location->address; ?>, <?= $ad->location->city; ?> (<?= $ad->location->postal_code; ?>)
             </p>
         </div>
         <div class="text-left md:text-right">
@@ -58,22 +65,22 @@
             <section class="mb-12">
                 <h2 class="text-2xl font-semibold text-primary mb-6 pb-2 border-b border-secondary/10">Caractéristiques</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
-                    <?php if ($ad->features['area']): ?>
+                    <?php if ($ad->features->area): ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Surface</span>
-                            <span class="font-semibold text-primary"><?= $ad->features['area']; ?> m²</span>
+                            <span class="font-semibold text-primary"><?= $ad->features->area; ?> m²</span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($ad->features['bedrooms']): ?>
+                    <?php if ($ad->features->bedrooms): ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Chambres</span>
-                            <span class="font-semibold text-primary"><?= $ad->features['bedrooms']; ?></span>
+                            <span class="font-semibold text-primary"><?= $ad->features->bedrooms; ?></span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($ad->features['year_built']): ?>
+                    <?php if ($ad->features->year_built): ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Année constr.</span>
-                            <span class="font-semibold text-primary"><?= $ad->features['year_built']; ?></span>
+                            <span class="font-semibold text-primary"><?= $ad->features->year_built; ?></span>
                         </div>
                     <?php endif; ?>
                 </div>

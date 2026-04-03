@@ -60,7 +60,22 @@ class CsrfTest extends TestCase
         $result = Csrf::validateToken($formId, $token, false);
         $this->assertTrue($result);
         
-        // Token should be removed after validation (one-time use)
+        // Token should STILL BE there after validation (not one-time use by default)
+        $this->assertArrayHasKey($formId, $_SESSION['_csrf_tokens']);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testValidateTokenOneTimeSuccess()
+    {
+        $formId = 'test_form';
+        $token = Csrf::generateToken($formId);
+
+        $result = Csrf::validateToken($formId, $token, false, true);
+        $this->assertTrue($result);
+        
+        // Token should be removed after validation if explicitly asked
         $this->assertArrayNotHasKey($formId, $_SESSION['_csrf_tokens']);
     }
 

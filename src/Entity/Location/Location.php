@@ -40,7 +40,7 @@ class Location implements Entity
             'id' => $this->id,
             'address' => $this->address,
             'city' => $this->city,
-            'postal_code' => $this->postalCode,
+            'postal_code' => $this->postal_code,
             'country' => $this->country,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
