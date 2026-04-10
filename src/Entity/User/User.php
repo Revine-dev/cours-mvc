@@ -16,16 +16,16 @@ class User implements Entity
     #[ORM\Column(type: 'integer')]
     public ?int $id = null;
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 100)]
     public string $name;
 
-    #[ORM\Column(type: 'string', unique: true)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     public string $email;
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 255)]
     public string $password;
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 50)]
     public string $role;
 
     public function __construct(array $data = [])

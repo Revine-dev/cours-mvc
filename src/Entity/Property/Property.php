@@ -36,10 +36,10 @@ class Property implements Entity
     #[ORM\Column(type: 'string', length: 10)]
     public string $currency = 'EUR';
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 50)]
     public string $type = '';
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 50)]
     public string $status = '';
 
     #[ORM\Column(type: 'datetime', name: 'created_at')]
@@ -261,6 +261,43 @@ class Property implements Entity
             return true;
         }
         return property_exists($this, $name);
+    }
+
+    /**
+     * Hydrate the property from an array of data safely.
+     */
+    public function fromArray(array $data): void
+    {
+        $this->title = (string)($data['title'] ?? $this->title);
+        $this->description = (string)($data['description'] ?? $this->description);
+        $this->price = (string)($data['price'] ?? $this->price);
+        $this->status = (string)($data['status'] ?? $this->status);
+        $this->type = (string)($data['type'] ?? $this->type);
+        $this->currency = (string)($data['currency'] ?? $this->currency);
+
+        if (isset($data['slug']) && !empty($data['slug'])) {
+            $this->slug = (string)$data['slug'];
+        }
+
+        if (isset($data['features']) && is_array($data['features'])) {
+            $this->features = $data['features'];
+        }
+
+        if (isset($data['address']) || isset($data['city']) || isset($data['postal_code'])) {
+            if (!$this->location) {
+                $this->location = new Location();
+            }
+            $this->location->address = (string)($data['address'] ?? $this->location->address);
+            $this->location->city = (string)($data['city'] ?? $this->location->city);
+            $this->location->postal_code = (string)($data['postal_code'] ?? $this->location->postal_code);
+            $this->location->country = (string)($data['country'] ?? 'France');
+        }
+
+        if (isset($data['images']) && is_array($data['images'])) {
+            $this->setImages($data['images']);
+        }
+
+        $this->updatedAt = new \DateTime();
     }
 
     public function toArray(): array

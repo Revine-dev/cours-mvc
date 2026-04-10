@@ -2,7 +2,7 @@
 
 <main class="pt-32 pb-24 px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
+        <div class="flex-1 min-w-0">
             <nav class="flex mb-4 text-sm font-medium text-secondary/60">
                 <a href="<?= $this->route('home') ?>" class="hover:text-accent transition-colors">Accueil</a>
                 <span class="mx-2">/</span>
@@ -11,7 +11,7 @@
                 <span class="text-secondary"><?= $property->title; ?></span>
             </nav>
             <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-2">
-                <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-primary">
+                <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-primary break-words">
                     <?= $property->title; ?>
                 </h1>
                 <?php if ((string) $property->status === 'compromise'): ?>
@@ -25,9 +25,9 @@
                 <?= $property->location->address; ?>, <?= $property->location->city; ?> (<?= $property->location->postal_code; ?>)
             </p>
         </div>
-        <div class="text-left md:text-right">
+        <div class="text-left md:text-right shrink-0">
             <p class="text-sm font-medium text-secondary uppercase tracking-wider mb-1">Prix de vente</p>
-            <p class="text-4xl font-bold text-accent">
+            <p class="text-3xl md:text-4xl font-bold text-accent whitespace-nowrap">
                 <?= $property->price->format_price($property->currency) ?>
             </p>
         </div>

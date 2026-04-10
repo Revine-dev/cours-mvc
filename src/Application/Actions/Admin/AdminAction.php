@@ -22,6 +22,7 @@ class AdminAction extends Action
     private PropertyRepository $propertyRepository;
     private UserRepository $usersRepository;
     private AgentRepository $agentRepository;
+    private \Doctrine\ORM\EntityManager $em;
 
     private array $models = [];
 
@@ -33,18 +34,21 @@ class AdminAction extends Action
      * @param PropertyRepository $propertyRepository
      * @param UserRepository $usersRepository
      * @param AgentRepository $agentRepository
+     * @param \Doctrine\ORM\EntityManager $em
      */
     public function __construct(
         LoggerInterface $logger,
         Helper $helper,
         PropertyRepository $propertyRepository,
         UserRepository $usersRepository,
-        AgentRepository $agentRepository
+        AgentRepository $agentRepository,
+        \Doctrine\ORM\EntityManager $em
     ) {
         parent::__construct($logger, $helper);
         $this->propertyRepository = $propertyRepository;
         $this->usersRepository = $usersRepository;
         $this->agentRepository = $agentRepository;
+        $this->em = $em;
         $this->models["property"] = $propertyRepository;
         $this->models["users"] = $usersRepository;
         $this->models["agents"] = $agentRepository;
@@ -55,7 +59,46 @@ class AdminAction extends Action
      */
     protected function action(): Response
     {
-        return $this->render("admin/dashboard");
+        $allProperties = $this->propertyRepository->findAll();
+        $totalAds = count($allProperties);
+        $activeAds = count(array_filter($allProperties, fn($p) => $p->status === 'for_sale'));
+        $totalAgents = count($this->agentRepository->findAll());
+        $totalValue = array_reduce($allProperties, fn($carry, $p) => $carry + $p->price, 0);
+        
+        $latestAds = $this->propertyRepository->findLatest(5);
+
+        // Chart data: properties per month for the last 6 months
+        $chartData = [];
+        $monthsFr = ['Jan' => 'Jan', 'Feb' => 'Fév', 'Mar' => 'Mar', 'Apr' => 'Avr', 'May' => 'Mai', 'Jun' => 'Juin', 'Jul' => 'Juil', 'Aug' => 'Août', 'Sep' => 'Sept', 'Oct' => 'Oct', 'Nov' => 'Nov', 'Dec' => 'Déc'];
+        
+        for ($i = 5; $i >= 0; $i--) {
+            $date = new \DateTime("-$i months");
+            $monthAbbr = $date->format('M');
+            $monthName = $monthsFr[$monthAbbr] ?? $monthAbbr;
+            $monthNum = $date->format('m');
+            $yearNum = $date->format('Y');
+            
+            $count = count(array_filter($allProperties, function($p) use ($monthNum, $yearNum) {
+                return $p->createdAt->format('m') === $monthNum && $p->createdAt->format('Y') === $yearNum;
+            }));
+            
+            $chartData[] = [
+                'label' => $monthName,
+                'count' => $count,
+                'isCurrent' => $i === 0
+            ];
+        }
+
+        return $this->render("admin/dashboard", [
+            "stats" => [
+                "totalAds" => $totalAds,
+                "activeAds" => $activeAds,
+                "totalAgents" => $totalAgents,
+                "totalValue" => $totalValue
+            ],
+            "latestAds" => $latestAds,
+            "chartData" => $chartData
+        ]);
     }
 
     /**
@@ -122,10 +165,29 @@ class AdminAction extends Action
         $this->init($request, $response, $args);
         $data = (array) $request->getParsedBody();
 
-        $ad = new Property();
-        $this->hydrateProperty($ad, $data);
+        if (empty($data['title'])) {
+            return $this->render("admin/edit", [
+                "ad" => new Property(),
+                "isNew" => true,
+                "agents" => $this->agentRepository->findAll(),
+                "error" => "Le titre est obligatoire."
+            ]);
+        }
 
-        $this->propertyRepository->save($ad);
+        $this->em->wrapInTransaction(function() use ($data) {
+            $ad = new Property();
+            $ad->fromArray($data);
+
+            if (empty($ad->slug)) {
+                $ad->slug = $this->slugify($ad->title);
+            }
+
+            if (isset($data['agent_id']) && !empty($data['agent_id'])) {
+                $ad->agent = $this->agentRepository->findAgentOfId((int)$data['agent_id']);
+            }
+
+            $this->propertyRepository->save($ad);
+        });
 
         return $this->redirect("ads");
     }
@@ -162,10 +224,16 @@ class AdminAction extends Action
         $id = (int) $this->resolveArg('id');
         $data = (array) $request->getParsedBody();
 
-        $ad = $this->propertyRepository->findPropertyOfId($id);
-        $this->hydrateProperty($ad, $data);
+        $this->em->wrapInTransaction(function() use ($id, $data) {
+            $ad = $this->propertyRepository->findPropertyOfId($id);
+            $ad->fromArray($data);
 
-        $this->propertyRepository->save($ad);
+            if (isset($data['agent_id']) && !empty($data['agent_id'])) {
+                $ad->agent = $this->agentRepository->findAgentOfId((int)$data['agent_id']);
+            }
+
+            $this->propertyRepository->save($ad);
+        });
 
         return $this->redirect("ads");
     }
@@ -265,10 +333,19 @@ class AdminAction extends Action
         $this->init($request, $response, $args);
         $data = (array) $request->getParsedBody();
 
-        $agent = new Agent();
-        $this->hydrateAgent($agent, $data);
+        if (empty($data['name'])) {
+            return $this->render("admin/edit_agent", [
+                "agent" => new Agent(),
+                "isNew" => true,
+                "error" => "Le nom de l'agent est obligatoire."
+            ]);
+        }
 
-        $this->agentRepository->save($agent);
+        $this->em->wrapInTransaction(function() use ($data) {
+            $agent = new Agent();
+            $agent->fromArray($data);
+            $this->agentRepository->save($agent);
+        });
 
         return $this->redirect("agents");
     }
@@ -304,10 +381,11 @@ class AdminAction extends Action
         $id = (int) $this->resolveArg('id');
         $data = (array) $request->getParsedBody();
 
-        $agent = $this->agentRepository->findAgentOfId($id);
-        $this->hydrateAgent($agent, $data);
-
-        $this->agentRepository->save($agent);
+        $this->em->wrapInTransaction(function() use ($id, $data) {
+            $agent = $this->agentRepository->findAgentOfId($id);
+            $agent->fromArray($data);
+            $this->agentRepository->save($agent);
+        });
 
         return $this->redirect("agents");
     }

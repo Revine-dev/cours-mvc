@@ -22,12 +22,15 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-secondary mb-1.5">Lien de l'annonce (Slug)</label>
-                    <div class="flex items-center gap-2">
-                        <span id="city-slug-prefix" class="text-secondary/50 text-sm italic">/vente/<?= !empty((string) $ad->location->city) ? strtolower(preg_replace('/[^A-Za-z0-9]+/', '-', iconv('UTF-8', 'ASCII//TRANSLIT', (string)$ad->location->city))) : '...' ?>/</span>
-                        <input type="text" id="slug-input" name="slug" value="<?= $ad->slug ?>" class="flex-1 px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none text-sm" placeholder="mon-super-bien-immobilier">
+                    <div class="mb-4">
+                        <label for="price" class="block text-sm/6 font-medium text-gray-900 dark:text-white mb-1.5">Lien de l'annonce (Slug)</label>
+                        <div class="mt-2">
+                            <div class="flex items-center rounded-md bg-white outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600 dark:bg-white/5 dark:outline-white/10 dark:focus-within:outline-indigo-500 border border-secondary/20">
+                                <div class="flex shrink-0 items-center rounded-l-md bg-white px-3 text-base text-gray-500 outline-1 -outline-offset-1 outline-gray-300 sm:text-sm/6 dark:bg-white/5 dark:text-gray-400 dark:outline-gray-700" id="city-slug-prefix">/vente/<?= !empty((string) $ad->location->city) ? strtolower(preg_replace('/[^A-Za-z0-9]+/', '-', iconv('UTF-8', 'ASCII//TRANSLIT', (string) $ad->location->city))) : '...' ?>/</div>
+                                <input id="slug-input" name="slug" value="<?= $ad->slug ?>" type="text" placeholder="maison-centre-ville" type="text" class="-ml-px block w-full grow rounded-r-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-gray-700 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500 border-l" />
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-xs text-secondary/60 mt-1 italic">Laissez vide pour générer automatiquement à partir du titre.</p>
                 </div>
 
                 <div>

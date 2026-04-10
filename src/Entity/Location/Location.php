@@ -19,13 +19,13 @@ class Location implements Entity
     #[ORM\Column(type: 'string')]
     public string $address = '';
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 100)]
     public string $city = '';
 
-    #[ORM\Column(type: 'string', name: 'postal_code')]
+    #[ORM\Column(type: 'string', length: 20, name: 'postal_code')]
     public string $postal_code = '';
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 100)]
     public string $country = '';
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 8, nullable: true)]

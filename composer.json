@@ -24,6 +24,7 @@
   "require": {
     "php": "^7.4 || ^8.0",
     "ext-json": "*",
+    "doctrine/migrations": "^3.9",
     "doctrine/orm": "^3.6",
     "monolog/monolog": "^2.8",
     "php-di/php-di": "^7",
