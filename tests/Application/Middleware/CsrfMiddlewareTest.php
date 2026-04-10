@@ -25,7 +25,7 @@ class CsrfMiddlewareTest extends TestCase
     public function testAutoInjectInMiddleware()
     {
         $app = $this->getAppInstance();
-        
+
         $app->get('/test-form', function ($request, $response) {
             $response->getBody()->write('<html><body><form method="POST" action="/submit"></form></body></html>');
             return $response->withHeader('Content-Type', 'text/html');
@@ -46,7 +46,7 @@ class CsrfMiddlewareTest extends TestCase
     public function testPostValidationSuccess()
     {
         $app = $this->getAppInstance();
-        
+
         // Pre-generate token in session
         $formId = '/submit';
         $token = Csrf::generateToken($formId);

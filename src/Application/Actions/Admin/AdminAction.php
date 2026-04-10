@@ -11,10 +11,8 @@ use App\Entity\Property\PropertyRepository;
 use App\Entity\User\UserRepository;
 use App\Entity\Agent\Agent;
 use App\Entity\Agent\AgentRepository;
-
 use App\Application\Helpers\Helper;
 use Psr\Log\LoggerInterface;
-
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AdminAction extends Action
@@ -64,24 +62,24 @@ class AdminAction extends Action
         $activeAds = count(array_filter($allProperties, fn($p) => $p->status === 'for_sale'));
         $totalAgents = count($this->agentRepository->findAll());
         $totalValue = array_reduce($allProperties, fn($carry, $p) => $carry + $p->price, 0);
-        
+
         $latestAds = $this->propertyRepository->findLatest(5);
 
         // Chart data: properties per month for the last 6 months
         $chartData = [];
         $monthsFr = ['Jan' => 'Jan', 'Feb' => 'Fév', 'Mar' => 'Mar', 'Apr' => 'Avr', 'May' => 'Mai', 'Jun' => 'Juin', 'Jul' => 'Juil', 'Aug' => 'Août', 'Sep' => 'Sept', 'Oct' => 'Oct', 'Nov' => 'Nov', 'Dec' => 'Déc'];
-        
+
         for ($i = 5; $i >= 0; $i--) {
             $date = new \DateTime("-$i months");
             $monthAbbr = $date->format('M');
             $monthName = $monthsFr[$monthAbbr] ?? $monthAbbr;
             $monthNum = $date->format('m');
             $yearNum = $date->format('Y');
-            
-            $count = count(array_filter($allProperties, function($p) use ($monthNum, $yearNum) {
+
+            $count = count(array_filter($allProperties, function ($p) use ($monthNum, $yearNum) {
                 return $p->createdAt->format('m') === $monthNum && $p->createdAt->format('Y') === $yearNum;
             }));
-            
+
             $chartData[] = [
                 'label' => $monthName,
                 'count' => $count,
@@ -174,7 +172,7 @@ class AdminAction extends Action
             ]);
         }
 
-        $this->em->wrapInTransaction(function() use ($data) {
+        $this->em->wrapInTransaction(function () use ($data) {
             $ad = new Property();
             $ad->fromArray($data);
 
@@ -224,7 +222,7 @@ class AdminAction extends Action
         $id = (int) $this->resolveArg('id');
         $data = (array) $request->getParsedBody();
 
-        $this->em->wrapInTransaction(function() use ($id, $data) {
+        $this->em->wrapInTransaction(function () use ($id, $data) {
             $ad = $this->propertyRepository->findPropertyOfId($id);
             $ad->fromArray($data);
 
@@ -341,7 +339,7 @@ class AdminAction extends Action
             ]);
         }
 
-        $this->em->wrapInTransaction(function() use ($data) {
+        $this->em->wrapInTransaction(function () use ($data) {
             $agent = new Agent();
             $agent->fromArray($data);
             $this->agentRepository->save($agent);
@@ -381,7 +379,7 @@ class AdminAction extends Action
         $id = (int) $this->resolveArg('id');
         $data = (array) $request->getParsedBody();
 
-        $this->em->wrapInTransaction(function() use ($id, $data) {
+        $this->em->wrapInTransaction(function () use ($id, $data) {
             $agent = $this->agentRepository->findAgentOfId($id);
             $agent->fromArray($data);
             $this->agentRepository->save($agent);

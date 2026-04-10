@@ -244,7 +244,9 @@ class Property implements Entity
     {
         $this->propertyImages->clear();
         foreach ($imageUrls as $url) {
-            if (empty($url)) continue;
+            if (empty($url)) {
+                continue;
+            }
             $image = new PropertyImage();
             $image->imageUrl = $url;
             $image->setProperty($this);

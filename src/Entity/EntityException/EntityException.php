@@ -6,4 +6,6 @@ namespace App\Entity\EntityException;
 
 use Exception;
 
-abstract class EntityException extends Exception {}
+abstract class EntityException extends Exception
+{
+}

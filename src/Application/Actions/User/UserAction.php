@@ -54,7 +54,9 @@ class UserAction extends Action
     {
         $this->init($request, $response, $args);
 
-        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $_SESSION = [];
         session_destroy();
 

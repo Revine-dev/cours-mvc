@@ -81,7 +81,7 @@
         <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
             <h2 class="text-lg font-semibold text-primary mb-6">Images de l'annonce</h2>
             <div id="images-container" class="space-y-3 mb-4">
-                <?php foreach ($ad->images as $img): ?>
+                <?php foreach ($ad->images as $img) : ?>
                     <div class="flex gap-2 image-row">
                         <input type="text" name="images[]" value="<?= $img ?>" class="flex-1 px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none text-sm" placeholder="URL de l'image">
                         <button type="button" onclick="this.parentElement.remove()" class="w-10 h-10 flex items-center justify-center text-secondary hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
@@ -120,7 +120,7 @@
             <div class="space-y-4">
                 <select name="agent_id" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all appearance-none">
                     <option value="">-- Sélectionner un agent --</option>
-                    <?php foreach ($agents as $agent): ?>
+                    <?php foreach ($agents as $agent) : ?>
                         <option value="<?= $agent->id ?>" <?= $ad->agent && $ad->agent->id == $agent->id ? 'selected' : '' ?>>
                             <?= $agent->name ?>
                         </option>

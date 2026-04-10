@@ -36,13 +36,13 @@ class CsrfMiddleware implements MiddlewareInterface
         if (strpos($contentType, 'text/html') !== false) {
             $body = (string) $response->getBody();
             $newBody = Csrf::autoInject($body);
-            
+
             // Create a new response but preserve status and headers
             $newResponse = new SlimResponse($response->getStatusCode());
             foreach ($response->getHeaders() as $name => $values) {
                 $newResponse = $newResponse->withHeader($name, $values);
             }
-            
+
             $newResponse->getBody()->write($newBody);
             return $newResponse;
         }

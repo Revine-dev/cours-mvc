@@ -59,7 +59,7 @@ class CsrfTest extends TestCase
 
         $result = Csrf::validateToken($formId, $token, false);
         $this->assertTrue($result);
-        
+
         // Token should STILL BE there after validation (not one-time use by default)
         $this->assertArrayHasKey($formId, $_SESSION['_csrf_tokens']);
     }
@@ -74,7 +74,7 @@ class CsrfTest extends TestCase
 
         $result = Csrf::validateToken($formId, $token, false, true);
         $this->assertTrue($result);
-        
+
         // Token should be removed after validation if explicitly asked
         $this->assertArrayNotHasKey($formId, $_SESSION['_csrf_tokens']);
     }
@@ -89,7 +89,7 @@ class CsrfTest extends TestCase
 
         $this->expectException(ExpiredPageException::class);
         $this->expectExceptionMessage('CSRF token mismatch');
-        
+
         Csrf::validateToken($formId, 'wrong_token');
     }
 
@@ -103,7 +103,7 @@ class CsrfTest extends TestCase
 
         $this->expectException(ExpiredPageException::class);
         $this->expectExceptionMessage('CSRF token has expired');
-        
+
         Csrf::validateToken($formId, $_SESSION['_csrf_tokens'][$formId]['token']);
     }
 
@@ -133,7 +133,7 @@ class CsrfTest extends TestCase
 
         $this->assertStringContainsString('value="/form1"', $injectedHtml);
         $this->assertStringContainsString('value="/form2"', $injectedHtml);
-        
+
         // Count occurrences of csrf_token
         $count = substr_count($injectedHtml, 'name="csrf_token"');
         $this->assertEquals(2, $count);

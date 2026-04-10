@@ -15,7 +15,7 @@
         <h2 class="text-lg font-semibold text-primary mb-6">Informations de l'agent</h2>
 
         <div class="space-y-4">
-            <?php if ($isNewVal): ?>
+            <?php if ($isNewVal) : ?>
             <div>
                 <label class="block text-sm font-medium text-secondary mb-1.5">ID (Numérique)</label>
                 <input type="number" name="id" value="<?= $agent->id ?>" required class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">

@@ -109,28 +109,28 @@
         <header class="h-16 flex items-center justify-between px-8 border-b border-secondary/20 bg-background z-10">
             <div class="flex items-center text-sm">
                 <a href="<?= $this->route("admin"); ?>" class="text-secondary">Dashboard</a>
-                <?php if (!(string) $this->isActiveRoute("admin")): ?>
+                <?php if (!(string) $this->isActiveRoute("admin")) : ?>
                     <i class="fa-solid fa-chevron-right text-secondary/50 mx-2 text-xs"></i>
 
-                    <?php if (in_array($this->getCurrentRoute(), ['ads', 'create-ad', 'edit-ad'])): ?>
-                        <?php if ((string) $this->isActiveRoute("ads")): ?>
+                    <?php if (in_array($this->getCurrentRoute(), ['ads', 'create-ad', 'edit-ad'])) : ?>
+                        <?php if ((string) $this->isActiveRoute("ads")) : ?>
                             <span class="font-medium text-primary">Gestion des Annonces</span>
-                        <?php else: ?>
+                        <?php else : ?>
                             <a href="<?= $this->route("ads"); ?>" class="text-secondary">Gestion des Annonces</a>
                         <?php endif; ?>
-                        <?php if (in_array($this->getCurrentRoute(), ['create-ad', 'edit-ad'])): ?>
+                        <?php if (in_array($this->getCurrentRoute(), ['create-ad', 'edit-ad'])) : ?>
                             <i class="fa-solid fa-chevron-right text-secondary/50 mx-2 text-xs"></i>
                             <span class="font-medium text-primary"><?= $this->getCurrentRoute() === "create-ad" ? "Création d'une annonce" : "Modification d'une annonce"; ?></span>
                         <?php endif; ?>
                     <?php endif; ?>
 
-                    <?php if (in_array($this->getCurrentRoute(), ['agents', 'create-agent', 'edit-agent'])): ?>
-                        <?php if ((string) $this->isActiveRoute("agents")): ?>
+                    <?php if (in_array($this->getCurrentRoute(), ['agents', 'create-agent', 'edit-agent'])) : ?>
+                        <?php if ((string) $this->isActiveRoute("agents")) : ?>
                             <span class="font-medium text-primary">Gestion des Agents</span>
-                        <?php else: ?>
+                        <?php else : ?>
                             <a href="<?= $this->route("agents"); ?>" class="text-secondary">Gestion des Agents</a>
                         <?php endif; ?>
-                        <?php if (in_array($this->getCurrentRoute(), ['create-agent', 'edit-agent'])): ?>
+                        <?php if (in_array($this->getCurrentRoute(), ['create-agent', 'edit-agent'])) : ?>
                             <i class="fa-solid fa-chevron-right text-secondary/50 mx-2 text-xs"></i>
                             <span class="font-medium text-primary"><?= $this->getCurrentRoute() === "create-agent" ? "Ajouter un agent" : "Modifier un agent"; ?></span>
                         <?php endif; ?>

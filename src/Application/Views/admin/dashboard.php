@@ -7,7 +7,7 @@
     </div>
     <div class="flex gap-3 text-sm">
         <button class="px-4 py-2 bg-background border border-secondary/20 text-secondary rounded-xl hover:bg-secondary/5 transition-colors font-medium shadow-sm">
-            <i class="fa-regular fa-calendar mr-2"></i> <?php 
+            <i class="fa-regular fa-calendar mr-2"></i> <?php
                 $monthsFr = ['January' => 'Janvier', 'February' => 'Février', 'March' => 'Mars', 'April' => 'Avril', 'May' => 'Mai', 'June' => 'Juin', 'July' => 'Juillet', 'August' => 'Août', 'September' => 'Septembre', 'October' => 'Octobre', 'November' => 'Novembre', 'December' => 'Décembre'];
                 echo $monthsFr[date('F')] . ' ' . date('Y');
             ?>
@@ -99,15 +99,15 @@
             </div>
 
             <div class="w-full relative z-10 flex items-end justify-between h-full px-2">
-                <?php foreach ($chartData as $data): ?>
-                    <?php 
+                <?php foreach ($chartData as $data) : ?>
+                    <?php
                         $c = $data['count'];
                         $countVal = ($c instanceof \App\Application\Response\ViewVariable) ? $c->dangerousRaw() : $c;
                         $height = ($countVal / $maxCount) * 100;
-                        
+
                         $isCur = $data['isCurrent'];
                         $isCurrentVal = ($isCur instanceof \App\Application\Response\ViewVariable) ? $isCur->dangerousRaw() : $isCur;
-                        
+
                         $colorClass = $isCurrentVal ? 'bg-accent shadow-[0_0_15px_rgba(0,126,167,0.3)]' : 'bg-secondary/20 hover:bg-accent/40';
                         $labelClass = $isCurrentVal ? 'font-medium text-primary' : 'text-secondary';
                     ?>
@@ -130,7 +130,7 @@
             <a href="<?= $this->route('ads'); ?>" class="text-xs text-accent hover:underline">Voir tout</a>
         </div>
 
-        <?php if (empty($latestAds)): ?>
+        <?php if (empty($latestAds)) : ?>
             <div class="flex-1 flex flex-col items-center justify-center text-center py-8">
                 <div class="w-16 h-16 rounded-full bg-secondary/5 flex items-center justify-center mb-4 border border-secondary/10">
                     <i class="fa-solid fa-inbox text-2xl text-secondary/40"></i>
@@ -140,15 +140,15 @@
                     Les dernières annonces publiées apparaîtront ici.
                 </p>
             </div>
-        <?php else: ?>
+        <?php else : ?>
             <div class="space-y-4">
-                <?php foreach ($latestAds as $ad): ?>
+                <?php foreach ($latestAds as $ad) : ?>
                     <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-secondary/5 transition-colors group">
                         <div class="w-12 h-12 rounded-lg bg-secondary/10 overflow-hidden flex-shrink-0">
                             <?php $images = $ad->images; ?>
-                            <?php if (!empty($images)): ?>
+                            <?php if (!empty($images)) : ?>
                                 <img src="<?= $images[0]; ?>" alt="" class="w-full h-full object-cover">
-                            <?php else: ?>
+                            <?php else : ?>
                                 <div class="w-full h-full flex items-center justify-center text-secondary/30">
                                     <i class="fa-solid fa-image"></i>
                                 </div>

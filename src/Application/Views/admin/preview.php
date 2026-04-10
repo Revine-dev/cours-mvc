@@ -19,7 +19,7 @@
                 <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-primary">
                     <?= $ad->title; ?>
                 </h1>
-                <?php if ((string) $ad->status == 'compromise'): ?>
+                <?php if ((string) $ad->status == 'compromise') : ?>
                     <span class="px-3 py-1 bg-success text-background text-xs font-bold uppercase tracking-widest rounded-full shadow-sm">
                         Sous compromis
                     </span>
@@ -41,9 +41,9 @@
     <!-- Gallery Placeholder -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 rounded-3xl overflow-hidden">
         <div class="aspect-video md:aspect-square bg-secondary/10 flex items-center justify-center text-secondary">
-            <?php if (!empty($ad->images[0])): ?>
+            <?php if (!empty($ad->images[0])) : ?>
                 <img src="<?= $ad->images[0]; ?>" alt="<?= $ad->title; ?>" class="w-full h-full object-cover">
-            <?php else: ?>
+            <?php else : ?>
                 <i class="fa-solid fa-image text-6xl"></i>
             <?php endif; ?>
         </div>
@@ -65,19 +65,19 @@
             <section class="mb-12">
                 <h2 class="text-2xl font-semibold text-primary mb-6 pb-2 border-b border-secondary/10">Caractéristiques</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
-                    <?php if ($ad->features->area): ?>
+                    <?php if ($ad->features->area) : ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Surface</span>
                             <span class="font-semibold text-primary"><?= $ad->features->area; ?> m²</span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($ad->features->bedrooms): ?>
+                    <?php if ($ad->features->bedrooms) : ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Chambres</span>
                             <span class="font-semibold text-primary"><?= $ad->features->bedrooms; ?></span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($ad->features->year_built): ?>
+                    <?php if ($ad->features->year_built) : ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Année constr.</span>
                             <span class="font-semibold text-primary"><?= $ad->features->year_built; ?></span>

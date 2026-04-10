@@ -19,7 +19,7 @@ class Csrf
 
     /**
      * Generate a CSRF token for a specific form.
-     * 
+     *
      * @param string $formId Unique identifier for the form
      * @param int $ttl Time to live in seconds
      * @return string The generated token
@@ -30,8 +30,8 @@ class Csrf
             session_start();
         }
 
-        // If session is still not active (e.g. headers sent in tests), 
-        // we fallback to a temporary storage or just return a dummy token 
+        // If session is still not active (e.g. headers sent in tests),
+        // we fallback to a temporary storage or just return a dummy token
         // to avoid crashing, but for real requests session should be active.
         if (session_status() !== PHP_SESSION_ACTIVE) {
             return "testing_token_no_session";
@@ -49,7 +49,7 @@ class Csrf
 
         // Generate cryptographically secure token
         $token = bin2hex(random_bytes(32));
-        
+
         // Store token with metadata
         $_SESSION[self::SESSION_KEY][$formId] = [
             'token' => $token,
@@ -62,7 +62,7 @@ class Csrf
 
     /**
      * Generate a hidden input field for the CSRF token.
-     * 
+     *
      * @param string $formId Unique identifier for the form
      * @return string HTML hidden input fields
      */
@@ -77,7 +77,7 @@ class Csrf
 
     /**
      * Validate a CSRF token.
-     * 
+     *
      * @param string|null $formId The form identifier submitted
      * @param string|null $token The token to validate
      * @param bool $rotateSession Whether to regenerate session ID on success
@@ -136,7 +136,7 @@ class Csrf
 
     /**
      * Automatically inject CSRF tokens into HTML form tags.
-     * 
+     *
      * @param string $html The HTML content
      * @return string Updated HTML with CSRF tokens
      */
@@ -144,18 +144,18 @@ class Csrf
     {
         return preg_replace_callback('/<form[^>]+method=["\']post["\'][^>]*>/i', function ($matches) {
             $formTag = $matches[0];
-            
+
             // Extract action to use as formId, or hash the tag if no action found
             preg_match('/action=["\']([^"\']+)["\']/i', $formTag, $actionMatch);
             $formId = $actionMatch[1] ?? md5($formTag);
-            
+
             return $formTag . "\n" . self::getTokenInput($formId);
         }, $html);
     }
 
     /**
      * Generate a hash of the user context (IP and User-Agent).
-     * 
+     *
      * @return string
      */
     private static function getContextHash(): string

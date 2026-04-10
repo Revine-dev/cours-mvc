@@ -14,7 +14,7 @@
                 <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-primary break-words">
                     <?= $property->title; ?>
                 </h1>
-                <?php if ((string) $property->status === 'compromise'): ?>
+                <?php if ((string) $property->status === 'compromise') : ?>
                     <span class="px-3 py-1 bg-success text-background text-xs font-bold uppercase tracking-widest rounded-full shadow-sm">
                         Sous compromis
                     </span>
@@ -39,7 +39,7 @@
             <img src="<?= $property->images[0]; ?>" alt="<?= $property->title; ?>" class="w-full h-full object-cover">
         </div>
         <div class="grid grid-cols-2 gap-4">
-            <?php foreach ($property->images->slice(1) as $image): ?>
+            <?php foreach ($property->images->slice(1) as $image) : ?>
                 <div class="aspect-square bg-secondary/10">
                     <img src="<?= $image; ?>" alt="Detail" class="w-full h-full object-cover">
                 </div>
@@ -60,37 +60,37 @@
             <section class="mb-12">
                 <h2 class="text-2xl font-semibold text-primary mb-6 pb-2 border-b border-secondary/10">Caractéristiques</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
-                    <?php if ($property->features->area): ?>
+                    <?php if ($property->features->area) : ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Surface</span>
                             <span class="font-semibold text-primary"><?= $property->features->area; ?> m²</span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($property->features->bedrooms): ?>
+                    <?php if ($property->features->bedrooms) : ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Chambres</span>
                             <span class="font-semibold text-primary"><?= $property->features->bedrooms; ?></span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($property->features->bathrooms): ?>
+                    <?php if ($property->features->bathrooms) : ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Salles de bain</span>
                             <span class="font-semibold text-primary"><?= $property->features->bathrooms; ?></span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($property->features->year_built): ?>
+                    <?php if ($property->features->year_built) : ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Année constr.</span>
                             <span class="font-semibold text-primary"><?= $property->features->year_built; ?></span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($property->features->floor): ?>
+                    <?php if ($property->features->floor) : ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Étage</span>
                             <span class="font-semibold text-primary"><?= $property->features->floor; ?></span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($property->features->garage): ?>
+                    <?php if ($property->features->garage) : ?>
                         <div class="flex flex-col">
                             <span class="text-sm text-secondary/60 mb-1">Garage</span>
                             <span class="font-semibold text-primary"><?= $property->features->garage ? 'Oui' : 'Non'; ?></span>
@@ -102,7 +102,7 @@
             <section>
                 <h2 class="text-2xl font-semibold text-primary mb-6 pb-2 border-b border-secondary/10">Prestations</h2>
                 <div class="flex flex-wrap gap-3">
-                    <?php foreach ($property->amenities as $amenity): ?>
+                    <?php foreach ($property->amenities as $amenity) : ?>
                         <span class="px-4 py-2 bg-background border border-secondary/20 rounded-full text-secondary text-sm font-medium">
                             <?= $amenity->name; ?>
                         </span>

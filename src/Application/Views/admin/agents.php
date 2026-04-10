@@ -24,8 +24,8 @@
             </thead>
             <tbody class="divide-y divide-secondary/10">
 
-                <?php if (count($agents) > 0): ?>
-                    <?php foreach ($agents as $agent): ?>
+                <?php if (count($agents) > 0) : ?>
+                    <?php foreach ($agents as $agent) : ?>
                     <tr class="hover:bg-secondary/5 transition-colors group">
                         <td class="py-4 px-6">
                             <div class="text-sm text-secondary">#<?= $agent->id ?></div>
@@ -53,7 +53,7 @@
                         </td>
                     </tr>
                     <?php endforeach; ?>
-                <?php else: ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="5" class="py-8 px-6 text-center text-secondary italic">Aucun agent trouvé.</td>
                     </tr>

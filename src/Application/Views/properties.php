@@ -54,16 +54,16 @@
                 <p class="text-secondary text-sm italic">Triés par les plus récents</p>
             </div>
 
-            <?php if (count($properties) > 0): ?>
+            <?php if (count($properties) > 0) : ?>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <?php foreach ($properties as $property): ?>
+                    <?php foreach ($properties as $property) : ?>
                         <a href="<?= $this->route('view-property', ['city' => $this->slugify($property->location->city), 'slug' => $property->slug]); ?>" class="bg-background rounded-2xl border border-secondary/20 overflow-hidden hover:border-accent hover:shadow-md transition-all group flex flex-col">
                             <div class="aspect-[4/3] relative overflow-hidden bg-secondary/10">
                                 <img src="<?= $property->images[0]; ?>" alt="<?= $property->title; ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out">
                                 <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-bold text-primary uppercase tracking-widest shadow-sm">
                                     <?= $property->type; ?>
                                 </div>
-                                <?php if ($property->status == 'compromise'): ?>
+                                <?php if ($property->status == 'compromise') : ?>
                                     <div class="absolute top-3 right-3 bg-success text-background px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest shadow-sm">
                                         Sous compromis
                                     </div>
@@ -81,7 +81,7 @@
                                     </p>
                                 </div>
                                 <div class="pt-4 border-t border-secondary/10 flex justify-between text-sm text-secondary">
-                                    <?php if ($property->features->bedrooms): ?>
+                                    <?php if ($property->features->bedrooms) : ?>
                                         <span class="flex items-center gap-1.5"><i class="fa-solid fa-bed text-accent/60 text-xs"></i> <?= $property->features->bedrooms; ?> Ch.</span>
                                     <?php endif; ?>
                                     <span class="flex items-center gap-1.5"><i class="fa-solid fa-vector-square text-accent/60 text-xs"></i> <?= $property->features->area; ?> m²</span>
@@ -90,7 +90,7 @@
                         </a>
                     <?php endforeach; ?>
                 </div>
-            <?php else: ?>
+            <?php else : ?>
                 <div class="py-24 text-center bg-secondary/5 rounded-3xl border-2 border-dashed border-secondary/20">
                     <i class="fa-solid fa-house-crack text-4xl text-secondary/30 mb-4"></i>
                     <h3 class="text-xl font-medium text-primary mb-2">Aucun bien ne correspond à vos critères</h3>

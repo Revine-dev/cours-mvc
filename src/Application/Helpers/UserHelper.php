@@ -65,8 +65,17 @@ class UserHelper
     /**
      * Check if user is authenticated.
      */
-    public function is_auth(): bool
+    public function isAuth(): bool
     {
         return $this->auth() !== null;
     }
+
+    /**
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
+    public function is_auth(): bool
+    {
+        return $this->isAuth();
+    }
+    // phpcs:enable
 }

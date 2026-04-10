@@ -26,7 +26,7 @@ class SessionMiddleware implements Middleware
                 'httponly' => true, // Not accessible via JavaScript
                 'samesite' => 'Lax' // Protection against CSRF
             ]);
-            
+
             session_start();
         }
 

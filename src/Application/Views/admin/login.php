@@ -40,7 +40,7 @@
                 <h2 class="text-2xl font-semibold tracking-tight text-primary">Portail d'Administration</h2>
                 <p class="text-sm text-secondary mt-2">Accès restreint. Veuillez vous identifier.</p>
 
-                <?php if ($error): ?>
+                <?php if ($error) : ?>
                     <div class="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm font-medium flex items-center justify-center gap-2">
                         <i class="fa-solid fa-circle-exclamation"></i>
                         <?= $error ?>

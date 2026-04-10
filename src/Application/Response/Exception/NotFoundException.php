@@ -8,7 +8,6 @@ use App\Application\Actions\ActionError;
 
 class NotFoundException extends RouterException
 {
-
     public function getStatusCode(): int
     {
         return 404;

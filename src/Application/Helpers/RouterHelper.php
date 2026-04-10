@@ -23,7 +23,9 @@ class RouterHelper
      */
     private function getParser(): ?RouteParserInterface
     {
-        if (!self::$currentRequest) return null;
+        if (!self::$currentRequest) {
+            return null;
+        }
         try {
             return RouteContext::fromRequest(self::$currentRequest)->getRouteParser();
         } catch (\Throwable $e) {
@@ -33,7 +35,9 @@ class RouterHelper
 
     public function getCurrentRoute(): string
     {
-        if (!self::$currentRequest) return '';
+        if (!self::$currentRequest) {
+            return '';
+        }
         $routeContext = RouteContext::fromRequest(self::$currentRequest);
         $route = $routeContext->getRoute();
         return $route ? (string) $route->getName() : "";
@@ -42,9 +46,11 @@ class RouterHelper
     /**
      * Retourne l'URL courante.
      */
-    public function current_url(string $get = ""): string
+    public function currentUrl(string $get = ""): string
     {
-        if (!self::$currentRequest) return '';
+        if (!self::$currentRequest) {
+            return '';
+        }
 
         $route = null;
         try {
@@ -57,7 +63,7 @@ class RouterHelper
         $uri = self::$currentRequest->getUri();
         if (!$get && $route) {
             return (string) $route->getName();
-        } else if (!$get && !$route) {
+        } elseif (!$get && !$route) {
             return (string) $uri->getPath();
         }
 
@@ -68,9 +74,20 @@ class RouterHelper
         return $url;
     }
 
+    /**
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
+    public function current_url(string $get = ""): string
+    {
+        return $this->currentUrl($get);
+    }
+    // phpcs:enable
+
     public function isActiveRoute(string $routeName): bool
     {
-        if (!self::$currentRequest) return false;
+        if (!self::$currentRequest) {
+            return false;
+        }
         try {
             $routeContext = RouteContext::fromRequest(self::$currentRequest);
             $route = $routeContext->getRoute();
@@ -92,18 +109,26 @@ class RouterHelper
     /**
      * Vérifie si une route est active.
      */
-    public function is_route_active(string $name, array $data = []): bool
+    public function isRouteActive(string $name, array $data = []): bool
     {
-        if (!self::$currentRequest) return false;
+        if (!self::$currentRequest) {
+            return false;
+        }
 
         try {
             $route = RouteContext::fromRequest(self::$currentRequest)->getRoute();
-            if (!$route) return false;
+            if (!$route) {
+                return false;
+            }
 
-            if ($route->getName() !== $name) return false;
+            if ($route->getName() !== $name) {
+                return false;
+            }
 
             foreach ($data as $key => $value) {
-                if ($route->getArgument($key) !== (string)$value) return false;
+                if ($route->getArgument($key) !== (string)$value) {
+                    return false;
+                }
             }
 
             return true;
@@ -111,4 +136,13 @@ class RouterHelper
             return false;
         }
     }
+
+    /**
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
+    public function is_route_active(string $name, array $data = []): bool
+    {
+        return $this->isRouteActive($name, $data);
+    }
+    // phpcs:enable
 }

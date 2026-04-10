@@ -66,10 +66,10 @@ class ResponseTest extends TestCase
         $this->getAppInstance();
         $response = new Response();
         $html = '<?php if ($error): ?>ErrorBox<?php else: ?>NoBox<?php endif; ?>';
-        
+
         $responseNo = $response->renderHtml($html, ["error" => ""]);
         $this->assertStringContainsString("NoBox", (string)$responseNo->getBody());
-        
+
         $responseYes = $response->renderHtml($html, ["error" => "Some Error"]);
         $this->assertStringContainsString("ErrorBox", (string)$responseYes->getBody());
     }

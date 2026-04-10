@@ -53,16 +53,16 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach ($properties as $property): ?>
+            <?php foreach ($properties as $property) : ?>
                 <a href="<?= $this->route('view-property', ['city' => $this->slugify($property->location->city), 'slug' => $property->slug]); ?>" class="bg-background rounded-2xl border border-secondary/20 overflow-hidden hover:border-accent hover:shadow-md transition-all group cursor-pointer flex flex-col">
                     <div class="aspect-[4/3] relative overflow-hidden bg-secondary/10">
                         <img src="<?= $property->images[0]; ?>" alt="<?= $property->title; ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out">
-                        <?php if ((string) $property->status === 'compromise'): ?>
+                        <?php if ((string) $property->status === 'compromise') : ?>
                             <div class="absolute top-3 right-3 bg-success px-2.5 py-1 rounded-md text-[10px] font-bold text-background uppercase tracking-widest shadow-sm">
                                 Sous compromis
                             </div>
                         <?php endif; ?>
-                        <?php if ($property->id === 1): ?>
+                        <?php if ($property->id === 1) : ?>
                             <div class="absolute top-3 left-3 bg-success px-2.5 py-1 rounded-md text-xs font-semibold text-background shadow-sm">
                                 Nouveau
                             </div>

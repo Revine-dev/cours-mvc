@@ -180,14 +180,15 @@ class ActionTest extends TestCase
         $testAction = new class ($logger, $helper) extends Action {
             public function action(): Response
             {
-                throw new class('Specific entity item not found') extends EntityRecordNotFoundException {};
+                throw new class ('Specific entity item not found') extends EntityRecordNotFoundException {
+                };
             }
         };
 
         $app->get('/test-entity-not-found', $testAction);
         $request = $this->createRequest('GET', '/test-entity-not-found', ['Accept' => 'text/html']);
         $response = $app->handle($request);
-        
+
         $this->assertEquals(404, $response->getStatusCode());
         $body = (string) $response->getBody();
         $this->assertStringContainsString('404', $body);

@@ -25,10 +25,10 @@ class DoctrinePropertyRepositoryTest extends DatabaseTestCase
         $property = new Property();
         $property->title = $title;
         $property->slug = $slug;
-        
+
         // Nullify auto-initialized non-persisted entities to avoid Doctrine errors
         $reflection = new \ReflectionClass($property);
-        
+
         $locationProp = $reflection->getProperty('location');
         $locationProp->setAccessible(true);
         $locationProp->setValue($property, null);
@@ -40,10 +40,10 @@ class DoctrinePropertyRepositoryTest extends DatabaseTestCase
         $priceProp = $reflection->getProperty('price');
         $priceProp->setAccessible(true);
         $priceProp->setValue($property, (string)$price);
-        
+
         $property->status = 'Available';
         $property->type = 'House';
-        
+
         return $property;
     }
 
@@ -82,7 +82,7 @@ class DoctrinePropertyRepositoryTest extends DatabaseTestCase
     {
         $p1 = $this->createSampleProperty('Modern Loft', 'modern-loft');
         $p2 = $this->createSampleProperty('Old Cottage', 'old-cottage');
-        
+
         $this->em->persist($p1);
         $this->em->persist($p2);
         $this->em->flush();
@@ -96,7 +96,7 @@ class DoctrinePropertyRepositoryTest extends DatabaseTestCase
     {
         $p1 = $this->createSampleProperty('Cheap', 'cheap', 50000.0);
         $p2 = $this->createSampleProperty('Expensive', 'expensive', 500000.0);
-        
+
         $this->em->persist($p1);
         $this->em->persist($p2);
         $this->em->flush();

@@ -11,7 +11,7 @@ class Helper
 {
     private static ?ContainerInterface $containerInstance = null;
     private ContainerInterface $container;
-    
+
     /**
      * Liste des classes de helpers à scanner pour les méthodes.
      */

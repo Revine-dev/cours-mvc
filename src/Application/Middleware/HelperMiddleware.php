@@ -16,7 +16,7 @@ class HelperMiddleware implements MiddlewareInterface
     {
         // On capture la requête pour le helper
         RouterHelper::setRequest($request);
-        
+
         return $handler->handle($request);
     }
 }

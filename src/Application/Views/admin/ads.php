@@ -46,8 +46,8 @@
             </thead>
             <tbody class="divide-y divide-secondary/10">
 
-                <?php if (count($ads) > 0): ?>
-                    <?php foreach ($ads as $ad): ?>
+                <?php if (count($ads) > 0) : ?>
+                    <?php foreach ($ads as $ad) : ?>
                     <tr class="hover:bg-secondary/5 transition-colors group">
                         <td class="py-4 px-6">
                             <div class="flex items-center gap-4">
@@ -99,7 +99,7 @@
                         </td>
                     </tr>
                     <?php endforeach; ?>
-                <?php else: ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="5" class="py-8 px-6 text-center text-secondary italic">Aucune annonce trouvée.</td>
                     </tr>
@@ -117,7 +117,7 @@
                 <i class="fa-solid fa-chevron-left text-xs"></i>
             </a>
             
-            <?php for ($i = 1; $i <= $pagination['total']->dangerousRaw(); $i++): ?>
+            <?php for ($i = 1; $i <= $pagination['total']->dangerousRaw(); $i++) : ?>
                 <a href="<?= $this->route('ads', [], ['page' => $i]) ?>" 
                    class="w-8 h-8 rounded-lg border <?= $i == $pagination['current']->dangerousRaw() ? 'border-accent bg-accent text-background' : 'border-secondary/20 text-secondary hover:bg-secondary/10' ?> flex items-center justify-center text-sm font-medium">
                     <?= $i ?>
