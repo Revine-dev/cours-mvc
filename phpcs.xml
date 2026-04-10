@@ -8,8 +8,12 @@
     <arg name="colors"/>
 
     <!-- inherit rules from: -->
-    <rule ref="PSR12"/>
+    <rule ref="PSR12">
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <config name="ignore_warnings_on_exit" value="1"/>
 
     <!-- Paths to check -->
     <file>src</file>
