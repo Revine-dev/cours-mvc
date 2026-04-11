@@ -94,7 +94,7 @@ class Response extends SlimResponse
         $tempFile = null;
         if ($isRaw) {
             $tempFile = tempnam(sys_get_temp_dir(), 'view_');
-            file_put_contents($tempFile, '?>' . $view);
+            file_put_contents($tempFile, $view);
             $viewPath = $tempFile;
         }
 

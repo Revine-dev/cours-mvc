@@ -39,7 +39,7 @@ class ResponseTest extends TestCase
 
         $body = (string) $response->getBody();
         $this->assertStringContainsString('URL:/test', $body);
-        $this->assertStringContainsString('Config:localhost', $body);
+        $this->assertStringContainsString('Config:' . \App\Application\Config\ConfigRegistry::get('db_host'), $body);
     }
 
     public function testRenderHtmlRaw()
