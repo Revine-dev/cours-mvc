@@ -27,6 +27,7 @@
 - Always type-hint method parameters and return types where possible.
 - Use minimal boilerplate; only include necessary code.
 - Routes should be declared in `src/routes.php` using Slim's routing syntax.
+- Methods and classes must be named as camelCase standard
 
 # Rendering and routing rules for the Slim Skeleton project
 

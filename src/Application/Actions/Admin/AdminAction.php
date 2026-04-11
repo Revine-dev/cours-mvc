@@ -18,11 +18,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class AdminAction extends Action
 {
     private PropertyRepository $propertyRepository;
-    private UserRepository $usersRepository;
     private AgentRepository $agentRepository;
     private \Doctrine\ORM\EntityManager $em;
-
-    private array $models = [];
 
     /**
      * AdminAction constructor.
@@ -30,7 +27,6 @@ class AdminAction extends Action
      * @param LoggerInterface $logger
      * @param Helper $helper
      * @param PropertyRepository $propertyRepository
-     * @param UserRepository $usersRepository
      * @param AgentRepository $agentRepository
      * @param \Doctrine\ORM\EntityManager $em
      */
@@ -38,18 +34,13 @@ class AdminAction extends Action
         LoggerInterface $logger,
         Helper $helper,
         PropertyRepository $propertyRepository,
-        UserRepository $usersRepository,
         AgentRepository $agentRepository,
         \Doctrine\ORM\EntityManager $em
     ) {
         parent::__construct($logger, $helper);
         $this->propertyRepository = $propertyRepository;
-        $this->usersRepository = $usersRepository;
         $this->agentRepository = $agentRepository;
         $this->em = $em;
-        $this->models["property"] = $propertyRepository;
-        $this->models["users"] = $usersRepository;
-        $this->models["agents"] = $agentRepository;
     }
 
     /**
@@ -61,7 +52,7 @@ class AdminAction extends Action
         $totalAds = count($allProperties);
         $activeAds = count(array_filter($allProperties, fn($p) => $p->status === 'for_sale'));
         $totalAgents = count($this->agentRepository->findAll());
-        $totalValue = array_reduce($allProperties, fn($carry, $p) => $carry + $p->price, 0);
+        $totalValue = array_reduce($allProperties, fn($carry, $p) => $carry + (float) $p->price, 0);
 
         $latestAds = $this->propertyRepository->findLatest(5);
 
@@ -405,23 +396,6 @@ class AdminAction extends Action
         $this->agentRepository->delete($agent);
 
         return $this->redirect("agents");
-    }
-
-    /**
-     * Hydrates an Agent entity.
-     *
-     * @param Agent $agent
-     * @param array $data
-     * @return void
-     */
-    private function hydrateAgent(Agent $agent, array $data): void
-    {
-        if (isset($data['id'])) {
-            $agent->id = (int)$data['id'];
-        }
-        $agent->name = $data['name'] ?? $agent->name;
-        $agent->email = $data['email'] ?? $agent->email;
-        $agent->phone = $data['phone'] ?? $agent->phone;
     }
 
     /**

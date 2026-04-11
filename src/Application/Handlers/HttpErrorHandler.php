@@ -34,7 +34,7 @@ class HttpErrorHandler extends SlimErrorHandler
         bool $displayErrorDetails,
         bool $logErrors,
         bool $logErrorDetails
-    ): Response {
+    ): \Psr\Http\Message\ResponseInterface {
         $this->request = $request;
         $this->exception = $exception;
         $this->displayErrorDetails = $displayErrorDetails;
@@ -52,7 +52,7 @@ class HttpErrorHandler extends SlimErrorHandler
     /**
      * @inheritdoc
      */
-    protected function respond(): Response
+    protected function respond(): \Psr\Http\Message\ResponseInterface
     {
         $exception = $this->exception;
         $statusCode = 500;

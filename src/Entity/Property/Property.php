@@ -12,6 +12,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @property array $images
+ * @property-read array $images_with_placeholder
+ * @property string|float $price
+ * @property string|float $area
+ * @property string|float $landArea
+ * @property array $features
+ * @property array $energy
+ * @property \App\Entity\Location\Location|null $location
+ * @property \App\Entity\Agent\Agent|null $agent
+ */
 #[ORM\Entity]
 #[ORM\Table(name: 'properties')]
 class Property implements Entity

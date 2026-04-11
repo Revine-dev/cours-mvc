@@ -61,10 +61,8 @@ class RouterHelper
         }
 
         $uri = self::$currentRequest->getUri();
-        if (!$get && $route) {
-            return (string) $route->getName();
-        } elseif (!$get && !$route) {
-            return (string) $uri->getPath();
+        if (!$get) {
+            return $route ? (string) $route->getName() : (string) $uri->getPath();
         }
 
         $url = $uri->getScheme() . '://' . $uri->getHost() . $uri->getPath();

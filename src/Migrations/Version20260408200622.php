@@ -65,7 +65,7 @@ final class Version20260408200622 extends AbstractMigration
 
         // 7. Users
         $this->addSql("INSERT INTO users (id, name, email, password, role) VALUES
-            (1, 'Johnny', 'admin@agence.com', '$2y$12$ytUzOLTuhiQruphdr.BOmuGhv8jeu66HcMOI3.0C6s/vaou2jJj3m', 'Admin')");
+            (1, 'Johnny', 'admin@agence.com', '\$2y\$12\$ytUzOLTuhiQruphdr.BOmuGhv8jeu66HcMOI3.0C6s/vaou2jJj3m', 'Admin')");
     }
 
     public function down(Schema $schema): void

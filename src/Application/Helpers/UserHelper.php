@@ -44,8 +44,8 @@ class UserHelper
             }
         }
 
-        if ($property && $this->cachedUser) {
-            if ($property === "initials" && \property_exists($this->cachedUser, "name")) {
+        if ($property) {
+            if ($property === "initials") {
                 return strtoupper(
                     implode('', array_map(
                         fn($w) => $w[0] ?? '',

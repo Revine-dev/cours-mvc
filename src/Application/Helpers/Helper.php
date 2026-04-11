@@ -7,6 +7,9 @@ namespace App\Application\Helpers;
 use Psr\Container\ContainerInterface;
 use BadMethodCallException;
 
+/**
+ * @method \App\Entity\User\User|string|null auth(string $property = "")
+ */
 class Helper
 {
     private static ?ContainerInterface $containerInstance = null;

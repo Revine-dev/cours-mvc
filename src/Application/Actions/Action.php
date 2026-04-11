@@ -7,10 +7,24 @@ namespace App\Application\Actions;
 use App\Entity\EntityException\EntityRecordNotFoundException;
 use App\Application\Response\Response;
 use App\Application\Helpers\Helper;
+use App\Entity\User\User;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpNotFoundException;
 
+/**
+ * @method string route(string $name, array $data = [], array $queryParams = [])
+ * @method string slugify(string $text, string $divider = '-')
+ * @method User|string|null auth(string $property = "")
+ * @method bool isAuth()
+ * @method bool is_auth()
+ * @method string currentUrl(string $get = "")
+ * @method string current_url(string $get = "")
+ * @method bool isActiveRoute(string $routeName)
+ * @method bool isRouteActive(string $name, array $data = [])
+ * @method bool is_route_active(string $name, array $data = [])
+ */
 abstract class Action
 {
     protected LoggerInterface $logger;

@@ -16,7 +16,7 @@ class DoctrineUserRepository implements UserRepository
     private EntityRepository $repository;
     private ?QueryBuilder $qb = null;
 
-    public function __construct(private EntityManager $em)
+    public function __construct(EntityManager $em)
     {
         $this->repository = $em->getRepository(User::class);
     }

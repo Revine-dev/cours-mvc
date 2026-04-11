@@ -41,4 +41,9 @@ class PropertyImage implements Entity
     {
         $this->property = $property;
     }
+
+    public function getProperty(): Property
+    {
+        return $this->property;
+    }
 }

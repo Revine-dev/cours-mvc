@@ -21,11 +21,6 @@ class UserAction extends Action
         $this->usersRepository = $usersRepository;
     }
 
-    private function hashPassword(string $password): string
-    {
-        return password_hash($password, PASSWORD_DEFAULT);
-    }
-
     private function isExistingUser(string $email, string $password): ?\App\Entity\User\User
     {
         $user = $this->usersRepository->findOneBy('email', $email);
