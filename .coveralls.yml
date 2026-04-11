@@ -1,1 +1,2 @@
+service_name: github
 json_path: coveralls-upload.json
