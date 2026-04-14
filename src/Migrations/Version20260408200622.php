@@ -19,6 +19,8 @@ final class Version20260408200622 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $this->skipIf(getenv('ENV') !== 'dev', 'Skipping test data migration. Set ENV=dev to execute.');
+
         // 1. Agents
         $this->addSql("INSERT INTO agents (id, name, email, phone) VALUES
             (201, 'Claire Dubois', 'claire.dubois@agence.com', '+33 6 22 33 44 55'),
@@ -70,6 +72,8 @@ final class Version20260408200622 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
+        $this->skipIf(getenv('ENV') !== 'dev', 'Skipping test data rollback. Test data is only managed in the "dev" environment.');
+
         $this->addSql('DELETE FROM property_images');
         $this->addSql('DELETE FROM property_amenities');
         $this->addSql('DELETE FROM properties');
