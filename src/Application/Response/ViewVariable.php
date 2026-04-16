@@ -49,6 +49,13 @@ class ViewVariable implements Stringable, ArrayAccess, IteratorAggregate, Counta
 
     public function __get(string $name): mixed
     {
+        if ($name === 'value') {
+            if (is_string($this->value)) {
+                return htmlspecialchars($this->value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            }
+            return $this->value;
+        }
+
         $val = null;
         if (is_object($this->value) && isset($this->value->$name)) {
             $val = $this->value->$name;

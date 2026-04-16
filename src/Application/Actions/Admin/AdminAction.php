@@ -8,7 +8,6 @@ use App\Application\Actions\Action;
 use App\Application\Response\Response;
 use App\Entity\Property\Property;
 use App\Entity\Property\PropertyRepository;
-use App\Entity\User\UserRepository;
 use App\Entity\Agent\Agent;
 use App\Entity\Agent\AgentRepository;
 use App\Application\Helpers\Helper;

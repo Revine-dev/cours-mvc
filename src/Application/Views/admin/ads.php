@@ -56,13 +56,14 @@
                                 </div>
                                 <div>
                                     <div class="font-medium text-primary text-sm"><?= $ad->title ?></div>
+                                    <div class="text-[10px] text-accent font-semibold uppercase tracking-wider mb-0.5"><?= $this->translatePropertyType($ad->type) ?></div>
                                     <div class="text-xs text-secondary mt-0.5"><?= $ad->location['address'] ?>, <?= $ad->location['city'] ?></div>
                                 </div>
                             </div>
                         </td>
                         <td class="py-4 px-6">
                             <div class="font-medium text-primary text-sm"><?= $ad->price->format_price() ?></div>
-                            <div class="text-xs text-secondary mt-0.5">Réf: <?= strtoupper(substr($ad->location['city']->dangerousRaw(), 0, 3)) ?>-<?= $ad->id ?></div>
+                            <div class="text-xs text-secondary mt-0.5">Réf: <?= strtoupper(substr($ad->location['city']->value, 0, 3)) ?>-<?= $ad->id ?></div>
                         </td>
                         <td class="py-4 px-6">
                             <div class="text-sm text-secondary"><?= $ad->features['area'] ?> m² • <?= $ad->features['bedrooms'] ?> Ch.</div>
@@ -71,7 +72,7 @@
                             <?php
                             $statusClass = 'bg-secondary/10 text-secondary border-secondary/20';
                             $statusLabel = 'Brouillon';
-                            $statusValue = $ad->status->dangerousRaw();
+                            $statusValue = $ad->status->value;
                             if ($statusValue == 'for_sale') {
                                 $statusClass = 'bg-success/10 text-success border-success/20';
                                 $statusLabel = 'Actif';
@@ -112,20 +113,20 @@
     <div class="px-6 py-4 border-t border-secondary/20 flex items-center justify-between">
         <span class="text-sm text-secondary">Affichage de <?= $pagination['from'] ?> à <?= $pagination['to'] ?> sur <?= $pagination['count'] ?> annonces</span>
         <div class="flex gap-1">
-            <a href="<?= $this->route('ads', [], ['page' => $pagination['current']->dangerousRaw() - 1]) ?>" 
-               class="w-8 h-8 rounded-lg border border-secondary/20 flex items-center justify-center text-secondary hover:bg-secondary/10 <?= $pagination['current']->dangerousRaw() <= 1 ? 'opacity-50 pointer-events-none' : '' ?>">
+            <a href="<?= $this->route('ads', [], ['page' => $pagination['current']->value - 1]) ?>" 
+               class="w-8 h-8 rounded-lg border border-secondary/20 flex items-center justify-center text-secondary hover:bg-secondary/10 <?= $pagination['current']->value <= 1 ? 'opacity-50 pointer-events-none' : '' ?>">
                 <i class="fa-solid fa-chevron-left text-xs"></i>
             </a>
             
-            <?php for ($i = 1; $i <= $pagination['total']->dangerousRaw(); $i++) : ?>
+            <?php for ($i = 1; $i <= $pagination['total']->value; $i++) : ?>
                 <a href="<?= $this->route('ads', [], ['page' => $i]) ?>" 
-                   class="w-8 h-8 rounded-lg border <?= $i == $pagination['current']->dangerousRaw() ? 'border-accent bg-accent text-background' : 'border-secondary/20 text-secondary hover:bg-secondary/10' ?> flex items-center justify-center text-sm font-medium">
+                   class="w-8 h-8 rounded-lg border <?= $i == $pagination['current']->value ? 'border-accent bg-accent text-background' : 'border-secondary/20 text-secondary hover:bg-secondary/10' ?> flex items-center justify-center text-sm font-medium">
                     <?= $i ?>
                 </a>
             <?php endfor; ?>
 
-            <a href="<?= $this->route('ads', [], ['page' => $pagination['current']->dangerousRaw() + 1]) ?>" 
-               class="w-8 h-8 rounded-lg border border-secondary/20 flex items-center justify-center text-secondary hover:bg-secondary/10 <?= $pagination['current']->dangerousRaw() >= $pagination['total']->dangerousRaw() ? 'opacity-50 pointer-events-none' : '' ?>">
+            <a href="<?= $this->route('ads', [], ['page' => $pagination['current']->value + 1]) ?>" 
+               class="w-8 h-8 rounded-lg border border-secondary/20 flex items-center justify-center text-secondary hover:bg-secondary/10 <?= $pagination['current']->value >= $pagination['total']->value ? 'opacity-50 pointer-events-none' : '' ?>">
                 <i class="fa-solid fa-chevron-right text-xs"></i>
             </a>
         </div>

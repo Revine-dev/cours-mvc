@@ -44,4 +44,22 @@ class StringHelper
     {
         return mb_substr($text, $offset, $length);
     }
+
+    /**
+     * Traduit le type de bien en français.
+     *
+     * @param string $type Type en anglais
+     * @return string Type en français
+     */
+    public function translatePropertyType(string $type): string
+    {
+        $types = [
+            'apartment' => 'Appartement',
+            'house' => 'Maison',
+            'loft' => 'Loft',
+            'building' => 'Immeuble',
+        ];
+
+        return $types[strtolower($type)] ?? ucfirst($type);
+    }
 }

@@ -1,16 +1,14 @@
 <?php include "layout/bo.header.php"; ?>
 
-<?php $isNewVal = is_object($isNew) ? $isNew->dangerousRaw() : $isNew; ?>
-
 <div class="mb-8">
     <a href="<?= $this->route('ads') ?>" class="text-secondary hover:text-accent transition-colors flex items-center gap-2 text-sm font-medium mb-4">
         <i class="fa-solid fa-arrow-left"></i> Retour à la liste
     </a>
-    <h1 class="text-2xl font-semibold text-primary"><?= $isNewVal ? 'Nouvelle annonce' : 'Modifier l\'annonce' ?></h1>
-    <p class="text-sm text-secondary mt-1"><?= $isNewVal ? 'Créez un nouveau bien immobilier.' : 'Éditez les détails du bien : ' . $ad->title ?></p>
+    <h1 class="text-2xl font-semibold text-primary"><?= $isNew->value ? 'Nouvelle annonce' : 'Modifier l\'annonce' ?></h1>
+    <p class="text-sm text-secondary mt-1"><?= $isNew->value ? 'Créez un nouveau bien immobilier.' : 'Éditez les détails du bien : ' . $ad->title ?></p>
 </div>
 
-<form action="<?= $isNewVal ? $this->route('store-ad') : $this->route('update-ad', ['id' => $ad->id]) ?>" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<form action="<?= $isNew->value ? $this->route('store-ad') : $this->route('update-ad', ['id' => $ad->id]) ?>" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div class="lg:col-span-2 space-y-6">
         <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
             <h2 class="text-lg font-semibold text-primary mb-6">Informations générales</h2>
@@ -49,6 +47,8 @@
                         <select name="type" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all appearance-none">
                             <option value="apartment" <?= $ad->type == 'apartment' ? 'selected' : '' ?>>Appartement</option>
                             <option value="house" <?= $ad->type == 'house' ? 'selected' : '' ?>>Maison</option>
+                            <option value="loft" <?= $ad->type == 'loft' ? 'selected' : '' ?>>Loft</option>
+                            <option value="building" <?= $ad->type == 'building' ? 'selected' : '' ?>>Immeuble</option>
                         </select>
                     </div>
                 </div>
@@ -102,11 +102,11 @@
                     <option value="for_sale" <?= $ad->status == 'for_sale' ? 'selected' : '' ?>>Actif (À vendre)</option>
                     <option value="compromise" <?= $ad->status == 'compromise' ? 'selected' : '' ?>>En compromis</option>
                     <option value="sold" <?= $ad->status == 'sold' ? 'selected' : '' ?>>Vendu</option>
-                    <option value="draft" <?= $ad->status == 'draft' || empty($ad->status->dangerousRaw()) ? 'selected' : '' ?>>Brouillon</option>
+                    <option value="draft" <?= $ad->status == 'draft' || empty($ad->status->value) ? 'selected' : '' ?>>Brouillon</option>
                 </select>
 
                 <button type="submit" class="w-full bg-accent hover:bg-primary text-background px-5 py-3 rounded-xl font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-check"></i> <?= $isNewVal ? 'Créer l\'annonce' : 'Enregistrer les modifications' ?>
+                    <i class="fa-solid fa-check"></i> <?= $isNew->value ? 'Créer l\'annonce' : 'Enregistrer les modifications' ?>
                 </button>
 
                 <button type="submit" formaction="<?= $this->route('preview-ad', ['id' => $ad->id]) ?>" formtarget="_blank" class="w-full bg-background border border-secondary/20 text-secondary hover:bg-secondary/5 px-5 py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2">

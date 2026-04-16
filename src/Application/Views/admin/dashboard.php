@@ -82,8 +82,7 @@
         <?php
         $maxCount = 0;
         foreach ($chartData as $data) {
-            $c = $data['count'];
-            $val = ($c instanceof \App\Application\Response\ViewVariable) ? $c->dangerousRaw() : $c;
+            $val = $data['count']->value;
             $maxCount = max($maxCount, (int)$val);
         }
         $maxCount = max($maxCount, 1); // Avoid division by zero
@@ -101,12 +100,10 @@
             <div class="w-full relative z-10 flex items-end justify-between h-full px-2">
                 <?php foreach ($chartData as $data) : ?>
                     <?php
-                        $c = $data['count'];
-                        $countVal = ($c instanceof \App\Application\Response\ViewVariable) ? $c->dangerousRaw() : $c;
+                        $countVal = $data['count']->value;
                         $height = ($countVal / $maxCount) * 100;
 
-                        $isCur = $data['isCurrent'];
-                        $isCurrentVal = ($isCur instanceof \App\Application\Response\ViewVariable) ? $isCur->dangerousRaw() : $isCur;
+                        $isCurrentVal = $data['isCurrent']->value;
 
                         $colorClass = $isCurrentVal ? 'bg-accent shadow-[0_0_15px_rgba(0,126,167,0.3)]' : 'bg-secondary/20 hover:bg-accent/40';
                         $labelClass = $isCurrentVal ? 'font-medium text-primary' : 'text-secondary';
@@ -156,7 +153,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <h4 class="text-sm font-medium text-primary truncate"><?= $ad->title; ?></h4>
-                            <p class="text-xs text-secondary truncate"><?= $ad->location->city; ?> • <?= $this->format_price($ad->price); ?></p>
+                            <p class="text-xs text-secondary truncate"><?= $this->translatePropertyType($ad->type); ?> • <?= $ad->location->city; ?> • <?= $this->format_price($ad->price); ?></p>
                         </div>
                         <a href="<?= $this->route('edit-ad', ['id' => $ad->id]); ?>" class="opacity-0 group-hover:opacity-100 p-2 text-secondary hover:text-accent transition-all">
                             <i class="fa-solid fa-pen-to-square"></i>

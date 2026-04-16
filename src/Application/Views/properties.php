@@ -61,7 +61,7 @@
                             <div class="aspect-[4/3] relative overflow-hidden bg-secondary/10">
                                 <img src="<?= $property->images[0]; ?>" alt="<?= $property->title; ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out">
                                 <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-bold text-primary uppercase tracking-widest shadow-sm">
-                                    <?= $property->type; ?>
+                                    <?= $this->translatePropertyType($property->type); ?>
                                 </div>
                                 <?php if ($property->status == 'compromise') : ?>
                                     <div class="absolute top-3 right-3 bg-success text-background px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest shadow-sm">
