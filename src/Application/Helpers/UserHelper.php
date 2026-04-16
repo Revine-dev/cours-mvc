@@ -56,7 +56,8 @@ class UserHelper
             if (!\property_exists($this->cachedUser, $property)) {
                 throw new HelperException("Property '{$property}' not found on User object.");
             }
-            return $this->cachedUser->$property;
+            $val = $this->cachedUser->$property;
+            return $val instanceof \BackedEnum ? $val->value : $val;
         }
 
         return $this->cachedUser;

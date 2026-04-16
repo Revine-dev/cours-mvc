@@ -25,6 +25,7 @@ class Helper
         UserHelper::class,
         NumberHelper::class,
         ArrayHelper::class,
+        SecurityHelper::class,
     ];
 
     public function __construct(ContainerInterface $container)

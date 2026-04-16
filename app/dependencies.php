@@ -35,6 +35,7 @@ return function (ContainerBuilder $containerBuilder) {
             return new StringHelper();
         },
         UserHelper::class => \DI\autowire(UserHelper::class),
+        \App\Application\Helpers\SecurityHelper::class => \DI\autowire(\App\Application\Helpers\SecurityHelper::class),
         LoggerInterface::class => function (ContainerInterface $c) {
             $settings = $c->get(SettingsInterface::class);
 

@@ -49,7 +49,7 @@
         <div class="flex-1">
             <div class="mb-8 flex items-baseline justify-between">
                 <h1 class="text-3xl font-semibold text-primary">
-                    <?= count($properties) ?> bien<?= count($properties) > 1 ? 's' : '' ?> trouvé<?= count($properties) > 1 ? 's' : '' ?>
+                    <?= $this->to_int($pagination->total) ?> bien<?= $this->to_int($pagination->total) > 1 ? 's' : '' ?> trouvé<?= $this->to_int($pagination->total) > 1 ? 's' : '' ?>
                 </h1>
                 <p class="text-secondary text-sm italic">Triés par les plus récents</p>
             </div>
@@ -90,6 +90,32 @@
                         </a>
                     <?php endforeach; ?>
                 </div>
+
+                <!-- Pagination -->
+                <?php if ($this->to_int($pagination->last_page) > 1) : ?>
+                    <div class="mt-12 flex justify-center items-center gap-2">
+                        <?php if ($this->to_int($pagination->current_page) > 1) : ?>
+                            <a href="<?= $this->route('properties', [], $this->merge($filters, ['page' => $this->to_int($pagination->current_page) - 1])) ?>"
+                               class="w-12 h-12 flex items-center justify-center rounded-xl border border-secondary/20 text-secondary hover:border-accent hover:text-accent transition-all">
+                                <i class="fa-solid fa-chevron-left text-sm"></i>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php for ($i = 1; $i <= $this->to_int($pagination->last_page); $i++) : ?>
+                            <a href="<?= $this->route('properties', [], $this->merge($filters, ['page' => $i])) ?>"
+                               class="w-12 h-12 flex items-center justify-center rounded-xl border <?= $this->to_int($pagination->current_page) === $i ? 'bg-primary border-primary text-background' : 'border-secondary/20 text-secondary hover:border-accent hover:text-accent' ?> font-semibold transition-all">
+                                <?= $i ?>
+                            </a>
+                        <?php endfor; ?>
+
+                        <?php if ($this->to_int($pagination->current_page) < $this->to_int($pagination->last_page)) : ?>
+                            <a href="<?= $this->route('properties', [], $this->merge($filters, ['page' => $this->to_int($pagination->current_page) + 1])) ?>"
+                               class="w-12 h-12 flex items-center justify-center rounded-xl border border-secondary/20 text-secondary hover:border-accent hover:text-accent transition-all">
+                                <i class="fa-solid fa-chevron-right text-sm"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
             <?php else : ?>
                 <div class="py-24 text-center bg-secondary/5 rounded-3xl border-2 border-dashed border-secondary/20">
                     <i class="fa-solid fa-house-crack text-4xl text-secondary/30 mb-4"></i>

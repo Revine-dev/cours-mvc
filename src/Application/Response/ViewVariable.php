@@ -70,21 +70,25 @@ class ViewVariable implements Stringable, ArrayAccess, IteratorAggregate, Counta
         $unwrapped = array_map(fn($arg) => ($arg instanceof self) ? $arg->dangerousRaw() : $arg, $args);
 
         if (is_object($this->value) && is_callable([$this->value, $name])) {
-            return new self(call_user_func_array([$this->value, $name], $unwrapped));
-        }
-
-        if ($container = Helper::getContainer()) {
+            $result = call_user_func_array([$this->value, $name], $unwrapped);
+        } elseif ($container = Helper::getContainer()) {
             $h = $container->get(Helper::class);
             try {
-                return new self($h->$name($this->dangerousRaw(), ...$unwrapped));
+                $result = $h->$name($this->dangerousRaw(), ...$unwrapped);
             } catch (\BadMethodCallException $e) {
-                // Not found in helpers either, we fall through to the final throw
+                throw new BadMethodCallException("Method {$name} not found on value or Helper system.");
             } catch (\Throwable $e) {
-                // Real error in helper call, rethrow it
                 throw $e;
             }
+        } else {
+            throw new BadMethodCallException("Method {$name} not found on value and Helper system not initialized.");
         }
-        throw new BadMethodCallException("Method {$name} not found on value or Helper system.");
+
+        if (is_scalar($result) || $result === null) {
+            return $result;
+        }
+
+        return new self($result);
     }
 
     public function __invoke(...$args): mixed

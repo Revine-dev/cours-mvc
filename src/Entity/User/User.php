@@ -25,8 +25,8 @@ class User implements Entity
     #[ORM\Column(type: 'string', length: 255)]
     public string $password;
 
-    #[ORM\Column(type: 'string', length: 50)]
-    public string $role;
+    #[ORM\Column(type: 'string', length: 50, enumType: UserRole::class)]
+    public UserRole $role;
 
     public function __construct(array $data = [])
     {
@@ -34,12 +34,14 @@ class User implements Entity
         $this->name = $data['name'] ?? '';
         $this->email = $data['email'] ?? '';
         $this->password = $data['password'] ?? '';
-        $this->role = $data['role'] ?? 'User';
+
+        $role = $data['role'] ?? UserRole::USER;
+        $this->role = $role instanceof UserRole ? $role : UserRole::from((string)$role);
     }
 
     public function isAdmin(): bool
     {
-        return $this->role === 'Admin';
+        return $this->role === UserRole::ADMIN;
     }
 
     public function toArray(): array
@@ -48,7 +50,7 @@ class User implements Entity
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'role' => $this->role,
+            'role' => $this->role->value,
         ];
     }
 

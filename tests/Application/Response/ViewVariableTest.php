@@ -67,4 +67,42 @@ class ViewVariableTest extends TestCase
         $this->assertEquals("0", (string)$varFalse); // ViewVariable::__toString() returns "0" for false.
         $this->assertEquals("0", (string)$varZero);
     }
+
+    public function testHelperCallUnwrapping()
+    {
+        $container = $this->prophesize(\Psr\Container\ContainerInterface::class);
+        $helper = new \App\Application\Helpers\Helper($container->reveal());
+
+        $container->get(\App\Application\Helpers\Helper::class)->willReturn($helper);
+        \App\Application\Helpers\Helper::setContainer($container->reveal());
+
+        // Mock all helpers expected by Helper::__call
+        $container->get(\App\Application\Helpers\StringHelper::class)->willReturn(new \App\Application\Helpers\StringHelper());
+        $container->get(\App\Application\Helpers\RouterHelper::class)->willReturn(new \App\Application\Helpers\RouterHelper());
+        $container->get(\App\Application\Helpers\ConfigHelper::class)->willReturn(new \App\Application\Helpers\ConfigHelper());
+        $container->get(\App\Application\Helpers\UserHelper::class)->willReturn($this->prophesize(\App\Application\Helpers\UserHelper::class)->reveal());
+        $container->get(\App\Application\Helpers\NumberHelper::class)->willReturn(new \App\Application\Helpers\NumberHelper());
+        $container->get(\App\Application\Helpers\ArrayHelper::class)->willReturn(new \App\Application\Helpers\ArrayHelper());
+        $container->get(\App\Application\Helpers\SecurityHelper::class)->willReturn(new \App\Application\Helpers\SecurityHelper());
+
+        $var = new ViewVariable("42");
+
+        // __call on ViewVariable should unwrap 42, pass it to NumberHelper::toInt,
+        // get 42 back, and return it raw because it's a scalar.
+        $result = $var->to_int();
+
+        $this->assertIsInt($result);
+        $this->assertEquals(42, $result);
+        $this->assertNotInstanceOf(ViewVariable::class, $result);
+
+        // Test with non-scalar result (using ArrayHelper::merge via Helper)
+        $arrayHelper = new \App\Application\Helpers\ArrayHelper();
+        $container->get(\App\Application\Helpers\ArrayHelper::class)->willReturn($arrayHelper);
+
+        $varArray = new ViewVariable(['a' => 1]);
+        $resultArray = $varArray->merge(['b' => 2]);
+
+        $this->assertInstanceOf(ViewVariable::class, $resultArray);
+        $this->assertEquals(['a' => 1, 'b' => 2], $resultArray->dangerousRaw());
+    }
 }

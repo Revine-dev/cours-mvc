@@ -11,6 +11,11 @@ use App\Application\Helpers\Helper;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Entity\User\UserRepository;
 
+/**
+ * @method bool isLoginAllowed(string $ip)
+ * @method void registerFailedLogin(string $ip)
+ * @method void clearLoginAttempts(string $ip)
+ */
 class UserAction extends Action
 {
     private UserRepository $usersRepository;
@@ -36,7 +41,8 @@ class UserAction extends Action
 
         // Securely store user data
         $_SESSION['user_id'] = $user->id;
-        $_SESSION['user_role'] = $user->role;
+        $_SESSION['user_role'] = $user->role->value;
+        $_SESSION['last_activity'] = time();
 
         // Metadata for security validation
         $_SESSION['login_time'] = time();
@@ -64,16 +70,29 @@ class UserAction extends Action
     protected function action(): Response
     {
         $error = "";
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+
         if ($this->request->getMethod() === 'POST') {
+            // Check rate limit before anything else
+            if (!$this->isLoginAllowed($ip)) {
+                $error = 'Trop de tentatives échouées. Veuillez patienter 15 minutes.';
+                return $this->render("admin/login", ["error" => $error]);
+            }
+
             $data = $this->getFormData();
             $email = $data['email'] ?? '';
             $password = $data['password'] ?? '';
 
             $user = $this->isExistingUser($email, $password);
             if ($user) {
+                // Successful login
+                $this->clearLoginAttempts($ip);
                 $this->createSession($user);
                 return $this->redirect("admin");
             }
+
+            // Failed login
+            $this->registerFailedLogin($ip);
             $error = 'Identifiants invalides ou compte restreint.';
         }
         return $this->render("admin/login", ["error" => $error]);

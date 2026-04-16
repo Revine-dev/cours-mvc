@@ -179,6 +179,31 @@ class DoctrinePropertyRepository implements PropertyRepository
         return $results;
     }
 
+    public function paginate(int $page, int $perPage = 10): array
+    {
+        if ($this->qb === null) {
+            $this->qb = $this->getBaseQueryBuilder();
+        }
+
+        $this->qb->setFirstResult(($page - 1) * $perPage)->setMaxResults($perPage);
+        $query = $this->qb->getQuery();
+
+        $paginator = new Paginator($query, true);
+
+        $total = count($paginator);
+        $items = iterator_to_array($paginator->getIterator());
+
+        $this->qb = null;
+
+        return [
+            'items' => $items,
+            'total' => $total,
+            'current_page' => $page,
+            'per_page' => $perPage,
+            'last_page' => (int)ceil($total / $perPage)
+        ];
+    }
+
     public function save(Property $property): void
     {
         $this->em->persist($property);

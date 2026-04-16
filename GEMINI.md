@@ -2,6 +2,7 @@
 
 ## General Instructions
 
+- This project is based on Slim Framework.
 - When generating new PHP code, follow the existing MVC structure.
 - Keep the code DRY (Don't Repeat Yourself) and minimal.
 - Respect MVC principles: Controllers → logic, Models → data, Views → display/render.

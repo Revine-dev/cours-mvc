@@ -46,6 +46,18 @@ class AdminAction extends Action
     /**
      * {@inheritdoc}
      */
+    protected function init(Request $request, Response $response, array $args): void
+    {
+        parent::init($request, $response, $args);
+
+        if (!$this->isAuth() || $this->auth()->role !== \App\Entity\User\UserRole::ADMIN) {
+            $this->response->unauthorized("Accès réservé aux administrateurs.");
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function action(): Response
     {
         $allProperties = $this->propertyRepository->findAll();

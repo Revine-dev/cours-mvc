@@ -52,10 +52,13 @@ class ListPropertiesAction extends Action
             $query->whereLessThanOrEqual('price', (int)$queryParams['max_price']);
         }
 
-        $properties = $query->latest()->get();
+        $page = (int)($queryParams['page'] ?? 1);
+        $perPage = 10;
+        $pagination = $query->latest()->paginate($page, $perPage);
 
         return $this->render("properties", [
-            'properties' => $properties,
+            'properties' => $pagination['items'],
+            'pagination' => $pagination,
             'filters' => $queryParams
         ]);
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Entity\User;
 
 use App\Entity\User\User;
+use App\Entity\User\UserRole;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -12,8 +13,8 @@ class UserTest extends TestCase
     public function userProvider(): array
     {
         return [
-            [1, 'Bill Gates', 'bill.gates@microsoft.com', 'Admin'],
-            [2, 'Steve Jobs', 'steve.jobs@apple.com', 'User'],
+            [1, 'Bill Gates', 'bill.gates@microsoft.com', UserRole::ADMIN],
+            [2, 'Steve Jobs', 'steve.jobs@apple.com', UserRole::USER],
         ];
     }
 
@@ -22,9 +23,9 @@ class UserTest extends TestCase
      * @param int    $id
      * @param string $name
      * @param string $email
-     * @param string $role
+     * @param UserRole $role
      */
-    public function testProperties(int $id, string $name, string $email, string $role)
+    public function testProperties(int $id, string $name, string $email, UserRole $role)
     {
         $user = new User([
             'id' => $id,
@@ -44,9 +45,9 @@ class UserTest extends TestCase
      * @param int    $id
      * @param string $name
      * @param string $email
-     * @param string $role
+     * @param UserRole $role
      */
-    public function testToData(int $id, string $name, string $email, string $role)
+    public function testToData(int $id, string $name, string $email, UserRole $role)
     {
         $user = new User([
             'id' => $id,
@@ -59,7 +60,7 @@ class UserTest extends TestCase
             'id' => $id,
             'name' => $name,
             'email' => $email,
-            'role' => $role,
+            'role' => $role->value,
         ];
 
         $this->assertEquals($expectedData, $user->toData());
@@ -67,8 +68,8 @@ class UserTest extends TestCase
 
     public function testIsAdmin()
     {
-        $admin = new User(['role' => 'Admin']);
-        $user = new User(['role' => 'User']);
+        $admin = new User(['role' => UserRole::ADMIN]);
+        $user = new User(['role' => UserRole::USER]);
 
         $this->assertTrue($admin->isAdmin());
         $this->assertFalse($user->isAdmin());

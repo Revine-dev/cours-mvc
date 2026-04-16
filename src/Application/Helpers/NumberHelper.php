@@ -33,4 +33,18 @@ class NumberHelper
         return $this->formatNumber($value, $decimals);
     }
     // phpcs:enable
+
+    public function toInt(mixed $value): int
+    {
+        return (int)$value;
+    }
+
+    /**
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
+    public function to_int(mixed $value): int
+    {
+        return $this->toInt($value);
+    }
+    // phpcs:enable
 }

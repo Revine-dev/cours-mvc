@@ -10,4 +10,9 @@ class ArrayHelper
     {
         return array_slice($value, $offset, $length);
     }
+
+    public function merge(array $array1, array $array2): array
+    {
+        return array_merge($array1, $array2);
+    }
 }

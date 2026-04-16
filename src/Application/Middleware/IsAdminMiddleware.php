@@ -35,6 +35,20 @@ class IsAdminMiddleware implements MiddlewareInterface
             throw new HttpUnauthorizedException($request, "Vous devez être connecté pour accéder à cette page.");
         }
 
+        // --- SESSION TIMEOUT (15 MINUTES) ---
+        $lastActivity = $session['last_activity'] ?? 0;
+        $timeoutDuration = 15 * 60; // 15 minutes in seconds
+
+        if (time() - $lastActivity > $timeoutDuration) {
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_destroy();
+            }
+            throw new ExpiredPageException("Votre session a expiré après 15 minutes d'inactivité. Veuillez vous reconnecter.");
+        }
+
+        // Update last activity to extend session
+        $_SESSION['last_activity'] = time();
+
         // Extra security: Validate IP and User Agent if they were stored
         $storedIp = $session['user_ip'] ?? null;
         $storedUa = $session['user_agent'] ?? null;
@@ -43,7 +57,9 @@ class IsAdminMiddleware implements MiddlewareInterface
 
         if (($storedIp && $storedIp !== $currentIp) || ($storedUa && $storedUa !== $currentUa)) {
             // Potential session hijacking, destroy session and force login
-            session_destroy();
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_destroy();
+            }
             throw new ExpiredPageException("Session invalide ou expirée (sécurité).");
         }
 

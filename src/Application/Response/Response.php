@@ -33,7 +33,15 @@ class Response extends SlimResponse
             // Déballage automatique des arguments si ce sont des ViewVariables
             $unwrapped = array_map(fn($arg) => ($arg instanceof ViewVariable) ? $arg->dangerousRaw() : $arg, $args);
 
-            return new ViewVariable($container->get(Helper::class)->$name(...$unwrapped));
+            $result = $container->get(Helper::class)->$name(...$unwrapped);
+
+            // Si c'est un scalaire ou null, on le retourne tel quel pour éviter les erreurs de conversion (ex: int)
+            // Sinon on l'enveloppe pour la sécurité/chaînage
+            if (is_scalar($result) || $result === null) {
+                return $result;
+            }
+
+            return new ViewVariable($result);
         }
         throw new BadMethodCallException("Method {$name} called but Helper system not initialized.");
     }

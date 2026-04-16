@@ -50,6 +50,13 @@ interface PropertyRepository
      */
     public function get(): array;
 
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return array{items: Property[], total: int, current_page: int, per_page: int, last_page: int}
+     */
+    public function paginate(int $page, int $perPage = 10): array;
+
     public function save(Property $property): void;
 
     public function delete(Property $property): void;

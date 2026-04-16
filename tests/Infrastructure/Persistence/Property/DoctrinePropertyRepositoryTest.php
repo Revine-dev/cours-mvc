@@ -109,4 +109,32 @@ class DoctrinePropertyRepositoryTest extends DatabaseTestCase
         $this->assertCount(1, $expensiveOnes);
         $this->assertEquals('Expensive', $expensiveOnes[0]->title);
     }
+
+    public function testPaginate(): void
+    {
+        for ($i = 1; $i <= 5; $i++) {
+            $p = $this->createSampleProperty("Prop $i", "prop-$i", 100000.0 * $i);
+            $this->em->persist($p);
+        }
+        $this->em->flush();
+
+        // Page 1, 2 items per page
+        $pagination = $this->repository->paginate(1, 2);
+        $this->assertCount(2, $pagination['items']);
+        $this->assertEquals(5, $pagination['total']);
+        $this->assertEquals(1, $pagination['current_page']);
+        $this->assertEquals(2, $pagination['per_page']);
+        $this->assertEquals(3, $pagination['last_page']);
+
+        // Page 3, should have 1 item left
+        $pagination = $this->repository->paginate(3, 2);
+        $this->assertCount(1, $pagination['items']);
+        $this->assertEquals(3, $pagination['current_page']);
+
+        // Page 4, should be empty
+        $pagination = $this->repository->paginate(4, 2);
+        $this->assertCount(0, $pagination['items']);
+        $this->assertEquals(4, $pagination['current_page']);
+        $this->assertEquals(5, $pagination['total']);
+    }
 }
