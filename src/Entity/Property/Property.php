@@ -113,7 +113,7 @@ class Property implements Entity
     #[ORM\JoinColumn(name: 'location_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     protected ?Location $location = null;
 
-    #[ORM\ManyToOne(targetEntity: Agent::class)]
+    #[ORM\ManyToOne(targetEntity: Agent::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'agent_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     protected ?Agent $agent = null;
 
@@ -136,8 +136,6 @@ class Property implements Entity
     {
         $this->propertyImages = new ArrayCollection();
         $this->amenities = new ArrayCollection();
-        $this->location = new Location();
-        $this->agent = new Agent();
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
     }

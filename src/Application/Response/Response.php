@@ -31,7 +31,12 @@ class Response extends SlimResponse
     {
         if ($container = Helper::getContainer()) {
             // Déballage automatique des arguments si ce sont des ViewVariables
-            $unwrapped = array_map(fn($arg) => ($arg instanceof ViewVariable) ? $arg->dangerousRaw() : $arg, $args);
+            $unwrapped = array_map(function ($arg) {
+                if (is_object($arg) && method_exists($arg, 'dangerousRaw')) {
+                    return $arg->dangerousRaw();
+                }
+                return $arg;
+            }, $args);
 
             $result = $container->get(Helper::class)->$name(...$unwrapped);
 

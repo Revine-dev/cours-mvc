@@ -74,7 +74,12 @@ class ViewVariable implements Stringable, ArrayAccess, IteratorAggregate, Counta
 
     public function __call(string $name, array $args): mixed
     {
-        $unwrapped = array_map(fn($arg) => ($arg instanceof self) ? $arg->dangerousRaw() : $arg, $args);
+        $unwrapped = array_map(function ($arg) {
+            if (is_object($arg) && method_exists($arg, 'dangerousRaw')) {
+                return $arg->dangerousRaw();
+            }
+            return $arg;
+        }, $args);
 
         if (is_object($this->value) && is_callable([$this->value, $name])) {
             $result = call_user_func_array([$this->value, $name], $unwrapped);
@@ -101,7 +106,12 @@ class ViewVariable implements Stringable, ArrayAccess, IteratorAggregate, Counta
     public function __invoke(...$args): mixed
     {
         if (is_callable($this->value)) {
-            $unwrapped = array_map(fn($arg) => ($arg instanceof self) ? $arg->dangerousRaw() : $arg, $args);
+            $unwrapped = array_map(function ($arg) {
+                if (is_object($arg) && method_exists($arg, 'dangerousRaw')) {
+                    return $arg->dangerousRaw();
+                }
+                return $arg;
+            }, $args);
             return new self(($this->value)(...$unwrapped));
         }
         throw new BadMethodCallException("Value is not callable.");

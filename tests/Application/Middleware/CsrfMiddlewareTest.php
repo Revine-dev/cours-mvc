@@ -7,6 +7,10 @@ namespace Tests\Application\Middleware;
 use App\Application\Helpers\Csrf;
 use Tests\TestCase;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class CsrfMiddlewareTest extends TestCase
 {
     protected function setUp(): void
@@ -20,7 +24,7 @@ class CsrfMiddlewareTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testAutoInjectInMiddleware()
     {
@@ -41,7 +45,7 @@ class CsrfMiddlewareTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testPostValidationSuccess()
     {
@@ -68,7 +72,7 @@ class CsrfMiddlewareTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testPostValidationFailure()
     {

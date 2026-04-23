@@ -8,6 +8,10 @@ use App\Application\Helpers\Csrf;
 use App\Application\Response\Exception\ExpiredPageException;
 use Tests\TestCase;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class CsrfTest extends TestCase
 {
     protected function setUp(): void
@@ -21,7 +25,7 @@ class CsrfTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testGenerateToken()
     {
@@ -36,7 +40,7 @@ class CsrfTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testGetTokenInput()
     {
@@ -50,7 +54,7 @@ class CsrfTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testValidateTokenSuccess()
     {
@@ -65,7 +69,7 @@ class CsrfTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testValidateTokenOneTimeSuccess()
     {
@@ -80,7 +84,7 @@ class CsrfTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testValidateTokenFailure()
     {
@@ -94,7 +98,7 @@ class CsrfTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testValidateTokenExpired()
     {
@@ -108,7 +112,7 @@ class CsrfTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testAutoInject()
     {
@@ -121,7 +125,7 @@ class CsrfTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     *
      */
     public function testAutoInjectMultipleForms()
     {

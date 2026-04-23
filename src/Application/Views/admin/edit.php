@@ -1,76 +1,76 @@
 <?php include "layout/bo.header.php"; ?>
 
 <div class="mb-8">
-    <a href="<?= $this->route('ads') ?>" class="text-secondary hover:text-accent transition-colors flex items-center gap-2 text-sm font-medium mb-4">
+    <a href="<?= $this->route('ads') ?>" class="text-secondary dark:text-background/60 hover:text-accent dark:hover:text-accent transition-colors flex items-center gap-2 text-sm font-medium mb-4">
         <i class="fa-solid fa-arrow-left"></i> Retour à la liste
     </a>
-    <h1 class="text-2xl font-semibold text-primary"><?= $isNew->value ? 'Nouvelle annonce' : 'Modifier l\'annonce' ?></h1>
-    <p class="text-sm text-secondary mt-1"><?= $isNew->value ? 'Créez un nouveau bien immobilier.' : 'Éditez les détails du bien : ' . $ad->title ?></p>
+    <h1 class="text-2xl font-semibold text-primary dark:text-background transition-colors"><?= $isNew ? 'Nouvelle annonce' : 'Modifier l\'annonce' ?></h1>
+    <p class="text-sm text-secondary dark:text-background/60 mt-1 transition-colors"><?= $isNew ? 'Créez un nouveau bien immobilier.' : 'Éditez les détails du bien : ' . $ad->title ?></p>
 </div>
 
-<form action="<?= $isNew->value ? $this->route('store-ad') : $this->route('update-ad', ['id' => $ad->id]) ?>" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<form action="<?= $isNew ? $this->route('store-ad') : $this->route('update-ad', ['id' => $ad->id]) ?>" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div class="lg:col-span-2 space-y-6">
-        <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-primary mb-6">Informations générales</h2>
+        <div class="bg-background dark:bg-white/5 border border-secondary/20 dark:border-background/10 rounded-2xl p-6 shadow-sm transition-all">
+            <h2 class="text-lg font-semibold text-primary dark:text-background mb-6 transition-colors">Informations générales</h2>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-secondary mb-1.5">Titre de l'annonce</label>
-                    <input type="text" id="title-input" name="title" value="<?= $ad->title ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                    <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Titre de l'annonce</label>
+                    <input type="text" id="title-input" name="title" value="<?= $ad->title ?>" class="w-full px-4 py-2.5 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent dark:focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
                 </div>
 
                 <div>
                     <div class="mb-4">
-                        <label for="price" class="block text-sm/6 font-medium text-gray-900 dark:text-white mb-1.5">Lien de l'annonce (Slug)</label>
+                        <label for="price" class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Lien de l'annonce (Slug)</label>
                         <div class="mt-2">
-                            <div class="flex items-center rounded-md bg-white outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600 dark:bg-white/5 dark:outline-white/10 dark:focus-within:outline-indigo-500 border border-secondary/20">
-                                <div class="flex shrink-0 items-center rounded-l-md bg-white px-3 text-base text-gray-500 outline-1 -outline-offset-1 outline-gray-300 sm:text-sm/6 dark:bg-white/5 dark:text-gray-400 dark:outline-gray-700" id="city-slug-prefix">/vente/<?= !empty((string) $ad->location->city) ? strtolower(preg_replace('/[^A-Za-z0-9]+/', '-', iconv('UTF-8', 'ASCII//TRANSLIT', (string) $ad->location->city))) : '...' ?>/</div>
-                                <input id="slug-input" name="slug" value="<?= $ad->slug ?>" type="text" placeholder="maison-centre-ville" type="text" class="-ml-px block w-full grow rounded-r-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-gray-700 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500 border-l" />
+                            <div class="flex items-center rounded-xl bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 focus-within:ring-2 focus-within:ring-accent/10 focus-within:border-accent transition-all overflow-hidden">
+                                <div class="flex shrink-0 items-center bg-secondary/5 dark:bg-background/5 px-3 py-2.5 text-sm text-secondary dark:text-background/40 border-r border-secondary/20 dark:border-background/10 transition-colors" id="city-slug-prefix">/vente/<?= !empty((string) $ad->location->city) ? strtolower(preg_replace('/[^A-Za-z0-9]+/', '-', iconv('UTF-8', 'ASCII//TRANSLIT', (string) $ad->location->city))) : '...' ?>/</div>
+                                <input id="slug-input" name="slug" value="<?= $ad->slug ?>" type="text" placeholder="maison-centre-ville" class="block w-full grow bg-transparent px-3 py-2.5 text-sm text-primary dark:text-background placeholder:text-secondary/40 dark:placeholder:text-background/20 outline-none transition-colors" />
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-secondary mb-1.5">Description</label>
-                    <textarea name="description" rows="6" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all"><?= $ad->description ?></textarea>
+                    <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Description</label>
+                    <textarea name="description" rows="6" class="w-full px-4 py-2.5 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent dark:focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all"><?= $ad->description ?></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-secondary mb-1.5">Prix (€)</label>
-                        <input type="text" id="price-display" value="<?= $ad->price ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all" placeholder="0">
+                        <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Prix (€)</label>
+                        <input type="text" id="price-display" value="<?= $ad->price ?>" class="w-full px-4 py-2.5 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent dark:focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all" placeholder="0">
                         <input type="hidden" name="price" id="price-real" value="<?= $ad->price ?>">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-secondary mb-1.5">Type de bien</label>
-                        <select name="type" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all appearance-none">
-                            <option value="apartment" <?= $ad->type == 'apartment' ? 'selected' : '' ?>>Appartement</option>
-                            <option value="house" <?= $ad->type == 'house' ? 'selected' : '' ?>>Maison</option>
-                            <option value="loft" <?= $ad->type == 'loft' ? 'selected' : '' ?>>Loft</option>
-                            <option value="building" <?= $ad->type == 'building' ? 'selected' : '' ?>>Immeuble</option>
+                        <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Type de bien</label>
+                        <select name="type" class="w-full px-4 py-2.5 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent dark:focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all appearance-none">
+                            <option value="apartment" <?= $ad->type == 'apartment' ? 'selected' : '' ?> class="bg-background dark:bg-primary">Appartement</option>
+                            <option value="house" <?= $ad->type == 'house' ? 'selected' : '' ?> class="bg-background dark:bg-primary">Maison</option>
+                            <option value="loft" <?= $ad->type == 'loft' ? 'selected' : '' ?> class="bg-background dark:bg-primary">Loft</option>
+                            <option value="building" <?= $ad->type == 'building' ? 'selected' : '' ?> class="bg-background dark:bg-primary">Immeuble</option>
                         </select>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-primary mb-6">Localisation</h2>
+        <div class="bg-background dark:bg-white/5 border border-secondary/20 dark:border-background/10 rounded-2xl p-6 shadow-sm transition-all">
+            <h2 class="text-lg font-semibold text-primary dark:text-background mb-6 transition-colors">Localisation</h2>
             <div class="space-y-4">
                 <div class="relative" id="address-container">
-                    <label class="block text-sm font-medium text-secondary mb-1.5">Adresse</label>
-                    <input type="text" name="address" id="address-input" autocomplete="off" value="<?= $ad->location->address ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
-                    <div id="address-results" class="absolute z-50 w-full mt-1 bg-background border border-secondary/20 rounded-xl shadow-lg hidden overflow-hidden"></div>
+                    <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Adresse</label>
+                    <input type="text" name="address" id="address-input" autocomplete="off" value="<?= $ad->location->address ?>" class="w-full px-4 py-2.5 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent dark:focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                    <div id="address-results" class="absolute z-50 w-full mt-1 bg-background dark:bg-primary border border-secondary/20 dark:border-background/10 rounded-xl shadow-lg hidden overflow-hidden transition-all"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-secondary mb-1.5">Ville</label>
-                        <input type="text" name="city" readonly value="<?= $ad->location->city ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                        <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Ville</label>
+                        <input type="text" name="city" readonly value="<?= $ad->location->city ?>" class="w-full px-4 py-2.5 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background/40 focus:border-accent outline-none transition-all">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-secondary mb-1.5">Code postal</label>
-                        <input type="text" name="postal_code" readonly value="<?= $ad->location->postal_code ?>" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all">
+                        <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Code postal</label>
+                        <input type="text" name="postal_code" readonly value="<?= $ad->location->postal_code ?>" class="w-full px-4 py-2.5 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background/40 focus:border-accent outline-none transition-all">
                     </div>
                 </div>
             </div>
@@ -78,50 +78,50 @@
     </div>
 
     <div class="space-y-6">
-        <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-primary mb-6">Images de l'annonce</h2>
+        <div class="bg-background dark:bg-white/5 border border-secondary/20 dark:border-background/10 rounded-2xl p-6 shadow-sm transition-all">
+            <h2 class="text-lg font-semibold text-primary dark:text-background mb-6 transition-colors">Images de l'annonce</h2>
             <div id="images-container" class="space-y-3 mb-4">
                 <?php foreach ($ad->images as $img) : ?>
                     <div class="flex gap-2 image-row">
-                        <input type="text" name="images[]" value="<?= $img ?>" class="flex-1 px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none text-sm" placeholder="URL de l'image">
-                        <button type="button" onclick="this.parentElement.remove()" class="w-10 h-10 flex items-center justify-center text-secondary hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                        <input type="text" name="images[]" value="<?= $img ?>" class="flex-1 px-4 py-2 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent outline-none text-sm transition-all" placeholder="URL de l'image">
+                        <button type="button" onclick="this.parentElement.remove()" class="w-10 h-10 flex items-center justify-center text-secondary dark:text-background/40 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all">
                             <i class="fa-solid fa-trash text-sm"></i>
                         </button>
                     </div>
                 <?php endforeach; ?>
             </div>
-            <button type="button" id="add-image" class="w-full py-2.5 border-2 border-dashed border-secondary/20 rounded-xl text-secondary hover:text-accent hover:border-accent/50 hover:bg-accent/5 transition-all text-sm font-medium flex items-center justify-center gap-2">
+            <button type="button" id="add-image" class="w-full py-2.5 border-2 border-dashed border-secondary/20 dark:border-background/10 rounded-xl text-secondary dark:text-background/40 hover:text-accent hover:border-accent/50 hover:bg-accent/5 dark:hover:bg-background/5 transition-all text-sm font-medium flex items-center justify-center gap-2">
                 <i class="fa-solid fa-plus"></i> Ajouter une image (URL)
             </button>
         </div>
 
-        <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-primary mb-6">Statut de l'annonce</h2>
+        <div class="bg-background dark:bg-white/5 border border-secondary/20 dark:border-background/10 rounded-2xl p-6 shadow-sm transition-all">
+            <h2 class="text-lg font-semibold text-primary dark:text-background mb-6 transition-colors">Statut de l'annonce</h2>
             <div class="space-y-4">
-                <select name="status" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all appearance-none">
-                    <option value="for_sale" <?= $ad->status == 'for_sale' ? 'selected' : '' ?>>Actif (À vendre)</option>
-                    <option value="compromise" <?= $ad->status == 'compromise' ? 'selected' : '' ?>>En compromis</option>
-                    <option value="sold" <?= $ad->status == 'sold' ? 'selected' : '' ?>>Vendu</option>
-                    <option value="draft" <?= $ad->status == 'draft' || empty($ad->status->value) ? 'selected' : '' ?>>Brouillon</option>
+                <select name="status" class="w-full px-4 py-2.5 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent dark:focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all appearance-none">
+                    <option value="for_sale" <?= $ad->status == 'for_sale' ? 'selected' : '' ?> class="bg-background dark:bg-primary">Actif (À vendre)</option>
+                    <option value="compromise" <?= $ad->status == 'compromise' ? 'selected' : '' ?> class="bg-background dark:bg-primary">En compromis</option>
+                    <option value="sold" <?= $ad->status == 'sold' ? 'selected' : '' ?> class="bg-background dark:bg-primary">Vendu</option>
+                    <option value="draft" <?= (string)$ad->status == 'draft' || !(string)$ad->status ? 'selected' : '' ?> class="bg-background dark:bg-primary">Brouillon</option>
                 </select>
 
-                <button type="submit" class="w-full bg-accent hover:bg-primary text-background px-5 py-3 rounded-xl font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-check"></i> <?= $isNew->value ? 'Créer l\'annonce' : 'Enregistrer les modifications' ?>
+                <button type="submit" class="w-full bg-accent hover:bg-primary dark:hover:bg-accent/80 text-background px-5 py-3 rounded-xl font-medium transition-all shadow-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check"></i> <?= $isNew ? 'Créer l\'annonce' : 'Enregistrer les modifications' ?>
                 </button>
 
-                <button type="submit" formaction="<?= $this->route('preview-ad', ['id' => $ad->id]) ?>" formtarget="_blank" class="w-full bg-background border border-secondary/20 text-secondary hover:bg-secondary/5 px-5 py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                <button type="submit" formaction="<?= $this->route('preview-ad', ['id' => $ad->id]) ?>" formtarget="_blank" class="w-full bg-background dark:bg-white/5 border border-secondary/20 dark:border-background/10 text-secondary dark:text-background/60 hover:bg-secondary/5 dark:hover:bg-background/10 px-5 py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2">
                     <i class="fa-solid fa-eye"></i> Aperçu de l'annonce
                 </button>
             </div>
         </div>
 
-        <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-primary mb-6">Agent immobilier</h2>
+        <div class="bg-background dark:bg-white/5 border border-secondary/20 dark:border-background/10 rounded-2xl p-6 shadow-sm transition-all">
+            <h2 class="text-lg font-semibold text-primary dark:text-background mb-6 transition-colors">Agent immobilier</h2>
             <div class="space-y-4">
-                <select name="agent_id" class="w-full px-4 py-2.5 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all appearance-none">
-                    <option value="">-- Sélectionner un agent --</option>
+                <select name="agent_id" class="w-full px-4 py-2.5 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent dark:focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all appearance-none">
+                    <option value="" class="bg-background dark:bg-primary">-- Sélectionner un agent --</option>
                     <?php foreach ($agents as $agent) : ?>
-                        <option value="<?= $agent->id ?>" <?= $ad->agent && $ad->agent->id == $agent->id ? 'selected' : '' ?>>
+                        <option value="<?= $agent->id ?>" <?= $ad->agent && $ad->agent->id == $agent->id ? 'selected' : '' ?> class="bg-background dark:bg-primary">
                             <?= $agent->name ?>
                         </option>
                     <?php endforeach; ?>
@@ -129,20 +129,20 @@
             </div>
         </div>
 
-        <div class="bg-background border border-secondary/20 rounded-2xl p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-primary mb-4">Caractéristiques</h2>
+        <div class="bg-background dark:bg-white/5 border border-secondary/20 dark:border-background/10 rounded-2xl p-6 shadow-sm transition-all">
+            <h2 class="text-lg font-semibold text-primary dark:text-background mb-4 transition-colors">Caractéristiques</h2>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-secondary mb-1.5">Surface (m²)</label>
-                    <input type="number" name="features[area]" value="<?= $ad->features->area ?>" class="w-full px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none">
+                    <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Surface (m²)</label>
+                    <input type="number" name="features[area]" value="<?= $ad->features->area ?>" class="w-full px-4 py-2 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent outline-none transition-all">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-secondary mb-1.5">Chambres</label>
-                    <input type="number" name="features[bedrooms]" value="<?= $ad->features->bedrooms ?>" class="w-full px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none">
+                    <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Chambres</label>
+                    <input type="number" name="features[bedrooms]" value="<?= $ad->features->bedrooms ?>" class="w-full px-4 py-2 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent outline-none transition-all">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-secondary mb-1.5">Année de construction</label>
-                    <input type="number" name="features[year_built]" value="<?= $ad->features->year_built ?>" class="w-full px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none">
+                    <label class="block text-sm font-medium text-secondary dark:text-background/60 mb-1.5 transition-colors">Année de construction</label>
+                    <input type="number" name="features[year_built]" value="<?= $ad->features->year_built ?>" class="w-full px-4 py-2 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent outline-none transition-all">
                 </div>
             </div>
         </div>
@@ -183,7 +183,7 @@
                 if (data.features.length > 0) {
                     data.features.forEach(feature => {
                         const div = document.createElement('div');
-                        div.className = 'px-4 py-3 hover:bg-secondary/5 cursor-pointer text-sm text-primary border-b border-secondary/5 last:border-none';
+                        div.className = 'px-4 py-3 hover:bg-secondary/5 dark:hover:bg-background/5 cursor-pointer text-sm text-primary dark:text-background border-b border-secondary/5 dark:border-background/5 last:border-none transition-colors';
                         div.innerHTML = `<i class="fa-solid fa-location-dot text-accent mr-2"></i> ${feature.properties.label}`;
                         div.onclick = () => {
                             input.value = feature.properties.name;
@@ -245,8 +245,8 @@
                 const div = document.createElement('div');
                 div.className = 'flex gap-2 image-row';
                 div.innerHTML = `
-                    <input type="text" name="images[]" class="flex-1 px-4 py-2 bg-background border border-secondary/20 rounded-xl text-primary focus:border-accent outline-none text-sm" placeholder="URL de l'image">
-                    <button type="button" onclick="this.parentElement.remove()" class="w-10 h-10 flex items-center justify-center text-secondary hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                    <input type="text" name="images[]" class="flex-1 px-4 py-2 bg-background dark:bg-primary/50 border border-secondary/20 dark:border-background/10 rounded-xl text-primary dark:text-background focus:border-accent outline-none text-sm transition-all" placeholder="URL de l'image">
+                    <button type="button" onclick="this.parentElement.remove()" class="w-10 h-10 flex items-center justify-center text-secondary dark:text-background/40 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all">
                         <i class="fa-solid fa-trash text-sm"></i>
                     </button>
                 `;

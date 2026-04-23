@@ -226,12 +226,7 @@ class AdminAction extends Action
 
         $this->em->wrapInTransaction(function () use ($id, $data) {
             $ad = $this->propertyRepository->findPropertyOfId($id);
-            $ad->fromArray($data);
-
-            if (isset($data['agent_id']) && !empty($data['agent_id'])) {
-                $ad->agent = $this->agentRepository->findAgentOfId((int)$data['agent_id']);
-            }
-
+            $this->hydrateProperty($ad, $data);
             $this->propertyRepository->save($ad);
         });
 
@@ -271,7 +266,7 @@ class AdminAction extends Action
                 $agent = $this->agentRepository->findAgentOfId((int)$data['agent_id']);
                 $ad->agent = $agent;
             } catch (\Exception $e) {
-                // Agent not found, keep existing or set to null
+                // Agent not found
             }
         }
 

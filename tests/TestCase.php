@@ -27,11 +27,16 @@ class TestCase extends PHPUnit_TestCase
      * @return App
      * @throws Exception
      */
-    protected function getAppInstance(): App
+    protected function getAppInstance(array $overrides = []): App
     {
+        // Force reset static AppFactory container
+        $reflection = new \ReflectionClass(AppFactory::class);
+        $property = $reflection->getProperty('container');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+
         // Instantiate PHP-DI ContainerBuilder
         $containerBuilder = new ContainerBuilder();
-
         // Container intentionally not compiled for tests.
 
         // Set up settings
@@ -45,6 +50,10 @@ class TestCase extends PHPUnit_TestCase
         // Set up repositories
         $repositories = require __DIR__ . '/../app/repositories.php';
         $repositories($containerBuilder);
+
+        if (!empty($overrides)) {
+            $containerBuilder->addDefinitions($overrides);
+        }
 
         // Build PHP-DI Container instance
         $container = $containerBuilder->build();

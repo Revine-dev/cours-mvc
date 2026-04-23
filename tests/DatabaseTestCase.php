@@ -10,16 +10,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Tools\SchemaTool;
 use Psr\Container\ContainerInterface;
+use Slim\App;
 
 abstract class DatabaseTestCase extends TestCase
 {
     protected ?EntityManager $em = null;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpDatabase();
-    }
 
     protected function tearDown(): void
     {
@@ -27,15 +22,23 @@ abstract class DatabaseTestCase extends TestCase
             $this->em->close();
             $this->em = null;
         }
+        $_SESSION = [];
         parent::tearDown();
+    }
+
+    protected ?App $app = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->setUpDatabase();
     }
 
     private function setUpDatabase(): void
     {
-        $app = $this->getAppInstance();
-        /** @var ContainerInterface $container */
-        $container = $app->getContainer();
-
+        // First, get a temporary app to read settings
+        $tempApp = $this->getAppInstance();
+        $container = $tempApp->getContainer();
         $settings = $container->get(SettingsInterface::class)->get('doctrine');
 
         $config = ORMSetup::createAttributeMetadataConfiguration(
@@ -56,6 +59,19 @@ abstract class DatabaseTestCase extends TestCase
         $schemaTool = new SchemaTool($this->em);
         $metadata = $this->em->getMetadataFactory()->getAllMetadata();
         $schemaTool->createSchema($metadata);
+
+        // Now create the real app instance with the overridden EM
+        $this->app = $this->getAppInstance([
+            EntityManager::class => $this->em
+        ]);
+    }
+
+    protected function getAppInstance(array $overrides = []): App
+    {
+        if ($this->app !== null && empty($overrides)) {
+            return $this->app;
+        }
+        return parent::getAppInstance($overrides);
     }
 
     protected function getEntityManager(): EntityManager
