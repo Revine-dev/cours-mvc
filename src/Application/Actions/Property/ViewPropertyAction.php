@@ -26,7 +26,8 @@ class ViewPropertyAction extends Action
     protected function action(): Response
     {
         $slug = (string) $this->resolveArg('slug');
-        $property = $this->propertyRepository->findPropertyOfSlug($slug);
+        $city = (string) $this->resolveArg('city');
+        $property = $this->propertyRepository->findPropertyOfSlug($slug, $city);
 
         return $this->render("property", [
             'property' => $property

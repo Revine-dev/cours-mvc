@@ -19,9 +19,10 @@ interface PropertyRepository
 
     /**
      * @param string $slug
+     * @param string $city
      * @return Property
      */
-    public function findPropertyOfSlug(string $slug): Property;
+    public function findPropertyOfSlug(string $slug, string $city): Property;
 
     // --- Query Builder Methods ---
 

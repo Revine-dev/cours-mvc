@@ -51,11 +51,13 @@ class DoctrinePropertyRepository implements PropertyRepository
         return $property;
     }
 
-    public function findPropertyOfSlug(string $slug): Property
+    public function findPropertyOfSlug(string $slug, string $city): Property
     {
         $property = $this->getBaseQueryBuilder()
             ->andWhere('p.slug = :slug')
+            ->andWhere('l.city = :city')
             ->setParameter('slug', $slug)
+            ->setParameter('city', $city)
             ->getQuery()
             ->getOneOrNullResult();
 
