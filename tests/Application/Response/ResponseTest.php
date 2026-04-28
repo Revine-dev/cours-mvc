@@ -34,12 +34,12 @@ class ResponseTest extends TestCase
         RouterHelper::setRequest($request);
 
         $response = new Response();
-        $html = 'URL:<?= $this->current_url() ?>|Config:<?= $this->config("db_host") ?>';
+        $html = 'URL:<?= $this->current_url() ?>|Config:<?= $this->config("env") ?>';
         $response = $response->renderHtml($html);
 
         $body = (string) $response->getBody();
         $this->assertStringContainsString('URL:/test', $body);
-        $this->assertStringContainsString('Config:' . \App\Application\Config\ConfigRegistry::get('db_host'), $body);
+        $this->assertStringContainsString('Config:' . \App\Application\Config\ConfigRegistry::get('env'), $body);
     }
 
     public function testRenderHtmlRaw()

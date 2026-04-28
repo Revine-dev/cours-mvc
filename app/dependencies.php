@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Application\Settings\SettingsInterface;
+use App\Application\Settings\Settings;
+use App\Application\Config\ConfigRegistry;
 use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -18,6 +20,9 @@ use Doctrine\DBAL\DriverManager;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
+        SettingsInterface::class => function () {
+            return new Settings(ConfigRegistry::get('settings'));
+        },
         EntityManager::class => function (ContainerInterface $c) {
             $settings = $c->get(SettingsInterface::class)->get('doctrine');
             $config = ORMSetup::createAttributeMetadataConfiguration(

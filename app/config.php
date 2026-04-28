@@ -4,77 +4,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Database Host
-    |--------------------------------------------------------------------------
-    |
-    | The hostname of your database server.
-    | Usually "localhost" for local development.
-    |
-    */
-    'db_host' => getenv('DB_HOST') ?: '127.0.0.1',
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Database Name
-    |--------------------------------------------------------------------------
-    |
-    | The name of the database you want to connect to.
-    |
-    */
-    'db_name' => getenv('DB_NAME') ?: 'cours_mvc',
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Database Username
-    |--------------------------------------------------------------------------
-    |
-    | Your database username.
-    | Default is "root" for many local setups.
-    |
-    */
-    'db_user' => getenv('DB_USER') ?: 'root',
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Database Password
-    |--------------------------------------------------------------------------
-    |
-    | Your database password.
-    | Default password: "root".
-    |
-    */
-    'db_pass' => getenv('DB_PASS') ?: 'root',
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Database Port
-    |--------------------------------------------------------------------------
-    |
-    | The port used by your database server.
-    | Default MySQL port is 3306.
-    |
-    */
-    'db_port' => getenv('DB_PORT') ?: 3306,
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Database Charset
-    |--------------------------------------------------------------------------
-    |
-    | The charset
-    | Default MySQL charset is utf8mb4.
-    |
-    */
-    'db_charset' => getenv('DB_CHARSET') ?: 'utf8mb4',
-
-
-    /*
-    |--------------------------------------------------------------------------
     | Debug Mode
     |--------------------------------------------------------------------------
     |
@@ -131,6 +60,68 @@ return [
         'transactional' => true,
         'check_database_platform' => true,
         'organize_migrations' => 'none',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Slim Settings
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for Slim Framework and other components.
+    |
+    */
+    'settings' => [
+        'displayErrorDetails' => filter_var(getenv('DEBUG') ?: 'false', FILTER_VALIDATE_BOOLEAN) && LOCAL,
+        'logError'            => filter_var(getenv('DEBUG') ?: 'false', FILTER_VALIDATE_BOOLEAN),
+        'logErrorDetails'     => filter_var(getenv('DEBUG') ?: 'false', FILTER_VALIDATE_BOOLEAN),
+        'logger' => [
+            'name' => 'slim-app',
+            'path' => isset($_ENV['docker']) ? 'php://stdout' : ROOT . '/logs/app.log',
+            'level' => \Monolog\Logger::DEBUG,
+        ],
+        'doctrine' => [
+            'dev_mode' => true,
+            'cache_dir' => ROOT . '/var/cache/doctrine',
+            'metadata_dirs' => [ROOT . '/src/Entity'],
+            'connection' => [
+                'driver'   => 'pdo_mysql',
+
+                /*
+                | The hostname of your database server.
+                | Usually "localhost" for local development.
+                */
+                'host'     => getenv('DB_HOST') ?: '127.0.0.1',
+
+                /*
+                | The port used by your database server.
+                | Default MySQL port is 3306.
+                */
+                'port'     => (int)(getenv('DB_PORT') ?: 3306),
+
+                /*
+                | The name of the database you want to connect to.
+                */
+                'dbname'   => getenv('DB_NAME') ?: 'cours_mvc',
+
+                /*
+                | Your database username.
+                | Default is "root" for many local setups.
+                */
+                'user'     => getenv('DB_USER') ?: 'root',
+
+                /*
+                | Your database password.
+                | Default password: "root".
+                */
+                'password' => getenv('DB_PASS') ?: 'root',
+
+                /*
+                | The charset
+                | Default MySQL charset is utf8mb4.
+                */
+                'charset'  => getenv('DB_CHARSET') ?: 'utf8mb4',
+            ],
+        ],
     ],
 
 ];
