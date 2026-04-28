@@ -8,6 +8,7 @@ use App\Application\Actions\Action;
 use App\Application\Response\Response;
 use App\Entity\Property\PropertyRepository;
 use App\Application\Helpers\Helper;
+use App\Entity\User\UserRepository;
 use Psr\Log\LoggerInterface;
 
 class HomeAction extends Action

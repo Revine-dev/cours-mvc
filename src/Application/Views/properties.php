@@ -20,10 +20,10 @@
                         <label class="block text-sm font-medium text-secondary mb-2">Type de bien</label>
                         <select name="type" class="w-full px-4 py-3 bg-white border border-secondary/20 rounded-xl text-primary focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent appearance-none cursor-pointer">
                             <option value="">Tous les types</option>
-                            <option value="apartment" <?= $filters->type === 'apartment' ? 'selected' : '' ?>>Appartement</option>
-                            <option value="house" <?= $filters->type === 'house' ? 'selected' : '' ?>>Maison</option>
-                            <option value="loft" <?= $filters->type === 'loft' ? 'selected' : '' ?>>Loft</option>
-                            <option value="building" <?= $filters->type === 'building' ? 'selected' : '' ?>>Immeuble</option>
+                            <option value="apartment" <?= $filters->type == 'apartment' ? 'selected' : '' ?>>Appartement</option>
+                            <option value="house" <?= $filters->type == 'house' ? 'selected' : '' ?>>Maison</option>
+                            <option value="loft" <?= $filters->type == 'loft' ? 'selected' : '' ?>>Loft</option>
+                            <option value="building" <?= $filters->type == 'building' ? 'selected' : '' ?>>Immeuble</option>
                         </select>
                     </div>
 

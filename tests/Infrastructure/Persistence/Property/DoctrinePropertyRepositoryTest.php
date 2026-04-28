@@ -20,18 +20,24 @@ class DoctrinePropertyRepositoryTest extends DatabaseTestCase
         $this->repository = new DoctrinePropertyRepository($this->getEntityManager());
     }
 
-    private function createSampleProperty(string $title, string $slug, float $price = 100000.0): Property
+    private function createSampleProperty(string $title, string $slug, float $price = 100000.0, string $city = 'Paris'): Property
     {
         $property = new Property();
         $property->title = $title;
         $property->slug = $slug;
 
-        // Nullify auto-initialized non-persisted entities to avoid Doctrine errors
+        $location = new Location();
+        $location->city = $city;
+        $location->address = '123 Test St';
+        $location->postal_code = '75000';
+        $location->country = 'France';
+
+        // Set protected properties via reflection
         $reflection = new \ReflectionClass($property);
 
         $locationProp = $reflection->getProperty('location');
         $locationProp->setAccessible(true);
-        $locationProp->setValue($property, null);
+        $locationProp->setValue($property, $location);
 
         $agentProp = $reflection->getProperty('agent');
         $agentProp->setAccessible(true);
@@ -70,11 +76,11 @@ class DoctrinePropertyRepositoryTest extends DatabaseTestCase
 
     public function testFindPropertyOfSlug(): void
     {
-        $property = $this->createSampleProperty('Beach House', 'beach-house');
+        $property = $this->createSampleProperty('Beach House', 'beach-house', 100000.0, 'Marseille');
         $this->em->persist($property);
         $this->em->flush();
 
-        $foundProperty = $this->repository->findPropertyOfSlug('beach-house');
+        $foundProperty = $this->repository->findPropertyOfSlug('beach-house', 'Marseille');
         $this->assertEquals('Beach House', $foundProperty->title);
     }
 
