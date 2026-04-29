@@ -7,6 +7,9 @@
     <!-- use colors in output -->
     <arg name="colors"/>
 
+    <rule ref="Generic.WhiteSpace.DisallowTabIndent">
+        <severity>0</severity>
+    </rule>
     <!-- inherit rules from: -->
     <rule ref="PSR12">
         <exclude name="Generic.Files.LineLength"/>
