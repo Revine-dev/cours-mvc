@@ -42,7 +42,7 @@
 
 <section id="properties" class="py-24 bg-background border-y border-secondary/20">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <?php if (!$properties) : ?>
+        <?php if (count($properties) > 0) : ?>
             <div class="flex justify-between items-end mb-12">
                 <div>
                     <h2 class="text-3xl font-semibold tracking-tight text-primary mb-2">Annonces Récentes</h2>
