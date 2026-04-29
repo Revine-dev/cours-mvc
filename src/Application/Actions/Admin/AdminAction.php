@@ -113,23 +113,18 @@ class AdminAction extends Action
     {
         $this->init($request, $response, $args);
         $page = (int) ($request->getQueryParams()['page'] ?? 1);
-        $perPage = 5;
+        $perPage = 10;
 
-        $allAds = $this->propertyRepository->findAll();
-        $totalAds = count($allAds);
-        $totalPages = (int) ceil($totalAds / $perPage);
-        $page = max(1, min($page, $totalPages));
-
-        $ads = array_slice($allAds, ($page - 1) * $perPage, $perPage);
+        $paginate = $this->propertyRepository->paginate($page, $perPage);
 
         return $this->render("admin/ads", [
-            "ads" => $ads,
+            "ads" => $paginate['items'],
             "pagination" => [
-                "current" => $page,
-                "total" => $totalPages,
-                "count" => $totalAds,
-                "from" => ($page - 1) * $perPage + 1,
-                "to" => min($page * $perPage, $totalAds)
+                "current" => $paginate['current_page'],
+                "total" => $paginate['last_page'],
+                "count" => $paginate['total'],
+                "from" => ($paginate['current_page'] - 1) * $perPage + 1,
+                "to" => min($paginate['current_page'] * $perPage, $paginate['total'])
             ]
         ]);
     }
