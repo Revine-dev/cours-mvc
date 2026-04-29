@@ -42,54 +42,74 @@
 
 <section id="properties" class="py-24 bg-background border-y border-secondary/20">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="flex justify-between items-end mb-12">
-            <div>
-                <h2 class="text-3xl font-semibold tracking-tight text-primary mb-2">Annonces Récentes</h2>
-                <p class="text-secondary">Mises à jour en temps réel depuis notre réseau national vérifié.</p>
-            </div>
-            <a href="<?= $this->route("properties"); ?>" class="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-primary transition-colors">
-                Voir le catalogue <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach ($properties as $property) : ?>
-                <a href="<?= $this->route('view-property', ['city' => $this->slugify($property->location->city), 'slug' => $property->slug]); ?>" class="bg-background rounded-2xl border border-secondary/20 overflow-hidden hover:border-accent hover:shadow-md transition-all group cursor-pointer flex flex-col">
-                    <div class="aspect-[4/3] relative overflow-hidden bg-secondary/10">
-                        <img src="<?= $property->images[0]; ?>" alt="<?= $property->title; ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out">
-                        <?php if ((string) $property->status === 'compromise') : ?>
-                            <div class="absolute top-3 right-3 bg-success px-2.5 py-1 rounded-md text-[10px] font-bold text-background uppercase tracking-widest shadow-sm">
-                                Sous compromis
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($property->id === 1) : ?>
-                            <div class="absolute top-3 left-3 bg-success px-2.5 py-1 rounded-md text-xs font-semibold text-background shadow-sm">
-                                Nouveau
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="font-semibold text-lg text-primary">
-                                    <?= $property->price->format_price($property->currency) ?>
-                                </h3>
-                                <p class="text-secondary text-sm mt-1"><?= $property->location->address; ?>, <?= $property->location->city; ?></p>
-                            </div>
-                        </div>
-                        <div class="mt-auto pt-4 border-t border-secondary/20 flex gap-4 text-sm text-secondary">
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-bed text-accent text-xs"></i> <?= $property->features->bedrooms; ?> Ch.</span>
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-bath text-accent text-xs"></i> <?= $property->features->bathrooms; ?> S.d.B</span>
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-vector-square text-accent text-xs"></i> <?= $property->features->area; ?> m²</span>
-                        </div>
-                    </div>
+        <?php if (!$properties) : ?>
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-semibold tracking-tight text-primary mb-2">Annonces Récentes</h2>
+                    <p class="text-secondary">Mises à jour en temps réel depuis notre réseau national vérifié.</p>
+                </div>
+                <a href="<?= $this->route("properties"); ?>" class="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-primary transition-colors">
+                    Voir le catalogue <i class="fa-solid fa-arrow-right"></i>
                 </a>
-            <?php endforeach; ?>
-        </div>
+            </div>
 
-        <div class="mt-8 text-center sm:hidden">
-            <a href="<?= $this->route("properties"); ?>" class="inline-block w-full py-3 bg-background border border-secondary/30 rounded-xl text-sm font-medium text-primary">Voir toutes les annonces</a>
-        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <?php foreach ($properties as $property) : ?>
+                    <a href="<?= $this->route('view-property', ['city' => $this->slugify($property->location->city), 'slug' => $property->slug]); ?>" class="bg-background rounded-2xl border border-secondary/20 overflow-hidden hover:border-accent hover:shadow-md transition-all group cursor-pointer flex flex-col">
+                        <div class="aspect-[4/3] relative overflow-hidden bg-secondary/10">
+                            <img src="<?= $property->images[0]; ?>" alt="<?= $property->title; ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out">
+                            <?php if ((string) $property->status === 'compromise') : ?>
+                                <div class="absolute top-3 right-3 bg-success px-2.5 py-1 rounded-md text-[10px] font-bold text-background uppercase tracking-widest shadow-sm">
+                                    Sous compromis
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($property->id === 1) : ?>
+                                <div class="absolute top-3 left-3 bg-success px-2.5 py-1 rounded-md text-xs font-semibold text-background shadow-sm">
+                                    Nouveau
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="font-semibold text-lg text-primary">
+                                        <?= $property->price->format_price($property->currency) ?>
+                                    </h3>
+                                    <p class="text-secondary text-sm mt-1"><?= $property->location->address; ?>, <?= $property->location->city; ?></p>
+                                </div>
+                            </div>
+                            <div class="mt-auto pt-4 border-t border-secondary/20 flex gap-4 text-sm text-secondary">
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bed text-accent text-xs"></i> <?= $property->features->bedrooms; ?> Ch.</span>
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bath text-accent text-xs"></i> <?= $property->features->bathrooms; ?> S.d.B</span>
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-vector-square text-accent text-xs"></i> <?= $property->features->area; ?> m²</span>
+                            </div>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="mt-8 text-center sm:hidden">
+                <a href="<?= $this->route("properties"); ?>" class="inline-block w-full py-3 bg-background border border-secondary/30 rounded-xl text-sm font-medium text-primary">Voir toutes les annonces</a>
+            </div>
+        <?php else : ?>
+            <div class="relative overflow-hidden rounded-[2rem] border border-secondary/20 bg-gradient-to-b from-background to-secondary/5 py-24 px-6 text-center">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,126,167,0.05),transparent)] pointer-events-none"></div>
+                <div class="relative z-10 max-w-lg mx-auto">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-background border border-secondary/10 shadow-sm mb-8">
+                        <i class="fa-solid fa-house-chimney-crack text-3xl text-accent/40"></i>
+                    </div>
+                    <h3 class="text-3xl font-semibold tracking-tight text-primary mb-4">
+                        Expansion en cours
+                    </h3>
+                    <p class="text-secondary text-lg leading-relaxed mb-10">
+                        Notre catalogue se renouvelle. De nouveaux biens d'exception rejoindront bientôt notre sélection exclusive.
+                    </p>
+                    <a href="<?= $this->route('properties') ?>" class="inline-flex items-center gap-2 px-8 py-4 bg-primary text-background rounded-2xl font-medium hover:bg-accent transition-all shadow-lg shadow-primary/10">
+                        Explorer le catalogue complet <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
