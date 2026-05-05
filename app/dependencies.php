@@ -30,6 +30,12 @@ return function (ContainerBuilder $containerBuilder) {
                 $settings['dev_mode'],
                 $settings['cache_dir'] . '/proxy'
             );
+
+            // Ignore doctrine_migration_versions table in schema validation
+            $config->setSchemaAssetsFilter(function ($assetName) {
+                return !in_array($assetName, ['doctrine_migration_versions']);
+            });
+
             $connection = DriverManager::getConnection($settings['connection'], $config);
             return new EntityManager($connection, $config);
         },
