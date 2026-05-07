@@ -15,7 +15,8 @@ class DoctrineUserRepositoryTest extends DatabaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new DoctrineUserRepository($this->getEntityManager());
+        $em = $this->getEntityManager();
+        $this->repository = new DoctrineUserRepository($em, $em->getClassMetadata(User::class));
     }
 
     public function testFindAll(): void
@@ -63,12 +64,12 @@ class DoctrineUserRepositoryTest extends DatabaseTestCase
         $this->em->persist($user);
         $this->em->flush();
 
-        $foundUser = $this->repository->findOneBy('email', 'alice@example.com');
+        $foundUser = $this->repository->findOneBy(['email' => 'alice@example.com']);
         $this->assertNotNull($foundUser);
         $this->assertEquals('Alice', $foundUser->name);
     }
 
-    public function testWhereAndGet(): void
+    public function testFindBy(): void
     {
         $user1 = new User([
             'name' => 'Alice',
@@ -87,7 +88,7 @@ class DoctrineUserRepositoryTest extends DatabaseTestCase
         $this->em->persist($user2);
         $this->em->flush();
 
-        $admins = $this->repository->where('role', 'Admin')->get();
+        $admins = $this->repository->findBy(['role' => 'Admin']);
         $this->assertCount(1, $admins);
         $this->assertEquals('Bob', $admins[0]->name);
     }

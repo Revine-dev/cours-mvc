@@ -14,6 +14,7 @@ interface AgentRepository
     /**
      * @param int $id
      * @return Agent
+     * @throws AgentNotFoundException
      */
     public function findAgentOfId(int $id): Agent;
 

@@ -63,7 +63,7 @@ class IsAdminMiddleware implements MiddlewareInterface
             throw new ExpiredPageException("Session invalide ou expirée (sécurité).");
         }
 
-        $user = $this->userRepository->findOneBy('id', (int) $userId);
+        $user = $this->userRepository->findOneBy(['id' => (int) $userId]);
         if (!$user || !$user->isAdmin()) {
             throw new UnauthorizedException("Accès réservé aux administrateurs");
         }

@@ -40,9 +40,14 @@ All routes are accessible in `app/routes.php`
 
 All controller are located in `src/Application/Actions/`
 
-## Models
+## Models and Repositories
 
-Models are loaded through Doctrine ORM
+- Models are loaded through Doctrine ORM and use Attributes for mapping.
+- Repositories must extend `Doctrine\ORM\EntityRepository` and implement their respective interface.
+- Favor standard Doctrine methods: `find()`, `findAll()`, `findBy()`, and `findOneBy()`.
+- `findOneBy()` and `findBy()` must use **array criteria** (e.g., `['email' => $email]`).
+- Custom query logic should be encapsulated within the repository (e.g., the `search()` method for complex filtering).
+- Do not use custom "fluent" query wrappers; rely on Doctrine's native API or QueryBuilder.
 
 ## View rendering
 

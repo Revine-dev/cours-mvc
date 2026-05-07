@@ -24,39 +24,35 @@ interface PropertyRepository
      */
     public function findPropertyOfSlug(string $slug, string $city): Property;
 
-    // --- Query Builder Methods ---
-
-    public function findLatest(int $limit = 3): array;
-
-    public function findOneBy(string $key, mixed $value): ?Property;
-
-    public function where(string $key, mixed $value): static;
-
-    public function whereIn(string $key, array $values): static;
-
-    public function whereLike(string $key, string $value): static;
-
-    public function whereGreaterThanOrEqual(string $key, mixed $value): static;
-
-    public function whereLessThanOrEqual(string $key, mixed $value): static;
-
-    public function filter(callable $callback): static;
-
-    public function limit(int $n): static;
-
-    public function latest(): static;
-
     /**
+     * @param int $limit
      * @return Property[]
      */
-    public function get(): array;
+    public function findLatest(int $limit = 3): array;
 
     /**
+     * @param array $criteria
+     * @param array|null $orderBy
+     * @return Property|null
+     */
+    public function findOneBy(array $criteria, ?array $orderBy = null);
+
+    /**
+     * @param array $criteria
+     * @param array|null $orderBy
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return Property[]
+     */
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array;
+
+    /**
+     * @param array $filters
      * @param int $page
      * @param int $perPage
      * @return array{items: Property[], total: int, current_page: int, per_page: int, last_page: int}
      */
-    public function paginate(int $page, int $perPage = 10): array;
+    public function search(array $filters, int $page = 1, int $perPage = 10): array;
 
     public function save(Property $property): void;
 

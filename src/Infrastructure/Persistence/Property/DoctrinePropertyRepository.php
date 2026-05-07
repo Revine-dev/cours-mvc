@@ -7,24 +7,15 @@ namespace App\Infrastructure\Persistence\Property;
 use App\Entity\Property\Property;
 use App\Entity\Property\PropertyRepository;
 use App\Entity\Property\PropertyNotFoundException;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-class DoctrinePropertyRepository implements PropertyRepository
+class DoctrinePropertyRepository extends EntityRepository implements PropertyRepository
 {
-    private EntityRepository $repository;
-    private ?QueryBuilder $qb = null;
-
-    public function __construct(private EntityManager $em)
-    {
-        $this->repository = $em->getRepository(Property::class);
-    }
-
     private function getBaseQueryBuilder(): QueryBuilder
     {
-        return $this->repository->createQueryBuilder('p')
+        return $this->createQueryBuilder('p')
             ->select('p', 'l', 'a', 'i', 'am')
             ->leftJoin('p.location', 'l')
             ->leftJoin('p.agent', 'a')
@@ -78,124 +69,45 @@ class DoctrinePropertyRepository implements PropertyRepository
         return iterator_to_array(new Paginator($query, true));
     }
 
-    public function findOneBy(string $key, mixed $value): ?Property
+    public function search(array $filters, int $page = 1, int $perPage = 10): array
     {
-        return $this->getBaseQueryBuilder()
-            ->andWhere("p.$key = :val")
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
+        $qb = $this->getBaseQueryBuilder();
 
-    public function where(string $key, mixed $value): static
-    {
-        if ($this->qb === null) {
-            $this->qb = $this->getBaseQueryBuilder();
-        }
-        $this->qb->andWhere("p.$key = :$key")
-            ->setParameter($key, $value);
-        return $this;
-    }
-
-    public function whereIn(string $key, array $values): static
-    {
-        if ($this->qb === null) {
-            $this->qb = $this->getBaseQueryBuilder();
-        }
-        $paramName = str_replace('.', '_', $key) . '_in';
-        $field = strpos($key, '.') !== false ? $key : "p.$key";
-        $this->qb->andWhere($this->qb->expr()->in($field, ":$paramName"))
-            ->setParameter($paramName, $values);
-        return $this;
-    }
-
-    public function whereLike(string $key, string $value): static
-    {
-        if ($this->qb === null) {
-            $this->qb = $this->getBaseQueryBuilder();
-        }
-        $paramName = str_replace('.', '_', $key) . '_like';
-        // Use p. for standard columns, or leave it if already prefixed (e.g., l.city)
-        $field = strpos($key, '.') !== false ? $key : "p.$key";
-        $this->qb->andWhere("$field LIKE :$paramName")
-            ->setParameter($paramName, '%' . $value . '%');
-        return $this;
-    }
-
-    public function whereGreaterThanOrEqual(string $key, mixed $value): static
-    {
-        if ($this->qb === null) {
-            $this->qb = $this->getBaseQueryBuilder();
-        }
-        $paramName = str_replace('.', '_', $key) . '_gte';
-        $field = strpos($key, '.') !== false ? $key : "p.$key";
-        $this->qb->andWhere("$field >= :$paramName")
-            ->setParameter($paramName, $value);
-        return $this;
-    }
-
-    public function whereLessThanOrEqual(string $key, mixed $value): static
-    {
-        if ($this->qb === null) {
-            $this->qb = $this->getBaseQueryBuilder();
-        }
-        $paramName = str_replace('.', '_', $key) . '_lte';
-        $field = strpos($key, '.') !== false ? $key : "p.$key";
-        $this->qb->andWhere("$field <= :$paramName")
-            ->setParameter($paramName, $value);
-        return $this;
-    }
-
-    public function filter(callable $callback): static
-    {
-        return $this;
-    }
-
-    public function limit(int $n): static
-    {
-        if ($this->qb === null) {
-            $this->qb = $this->getBaseQueryBuilder();
-        }
-        $this->qb->setMaxResults($n);
-        return $this;
-    }
-
-    public function latest(): static
-    {
-        if ($this->qb === null) {
-            $this->qb = $this->getBaseQueryBuilder();
-        }
-        $this->qb->orderBy('p.id', 'DESC');
-        return $this;
-    }
-
-    public function get(): array
-    {
-        $query = $this->qb ? $this->qb->getQuery() : $this->getBaseQueryBuilder()->getQuery();
-
-        // Use Paginator to handle joins with setMaxResults correctly
-        $paginator = new Paginator($query, true);
-        $results = iterator_to_array($paginator->getIterator());
-
-        $this->qb = null;
-        return $results;
-    }
-
-    public function paginate(int $page, int $perPage = 10): array
-    {
-        if ($this->qb === null) {
-            $this->qb = $this->getBaseQueryBuilder();
+        if (!empty($filters['status_in'])) {
+            $qb->andWhere('p.status IN (:statuses)')
+                ->setParameter('statuses', $filters['status_in']);
         }
 
-        $this->qb->setFirstResult(($page - 1) * $perPage)->setMaxResults($perPage);
-        $query = $this->qb->getQuery();
+        if (!empty($filters['type'])) {
+            $qb->andWhere('p.type = :type')
+                ->setParameter('type', $filters['type']);
+        }
 
+        if (!empty($filters['city'])) {
+            $qb->andWhere('l.city LIKE :city')
+                ->setParameter('city', '%' . $filters['city'] . '%');
+        }
+
+        if (!empty($filters['min_price'])) {
+            $qb->andWhere('p.price >= :min_price')
+                ->setParameter('min_price', (int)$filters['min_price']);
+        }
+
+        if (!empty($filters['max_price'])) {
+            $qb->andWhere('p.price <= :max_price')
+                ->setParameter('max_price', (int)$filters['max_price']);
+        }
+
+        $qb->orderBy('p.id', 'DESC');
+
+        $qb->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        $query = $qb->getQuery();
         $paginator = new Paginator($query, true);
 
         $total = count($paginator);
         $items = iterator_to_array($paginator->getIterator());
-
-        $this->qb = null;
 
         return [
             'items' => $items,
@@ -208,13 +120,13 @@ class DoctrinePropertyRepository implements PropertyRepository
 
     public function save(Property $property): void
     {
-        $this->em->persist($property);
-        $this->em->flush();
+        $this->getEntityManager()->persist($property);
+        $this->getEntityManager()->flush();
     }
 
     public function delete(Property $property): void
     {
-        $this->em->remove($property);
-        $this->em->flush();
+        $this->getEntityManager()->remove($property);
+        $this->getEntityManager()->flush();
     }
 }

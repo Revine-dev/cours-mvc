@@ -29,7 +29,7 @@ class IsAdminMiddlewareTest extends TestCase
     public function testProcessAllowedForActiveAdmin()
     {
         $admin = new User(['id' => 1, 'role' => UserRole::ADMIN]);
-        $this->userRepository->findOneBy('id', 1)->willReturn($admin);
+        $this->userRepository->findOneBy(['id' => 1])->willReturn($admin);
 
         $_SESSION = [
             'user_id' => 1,
@@ -85,7 +85,7 @@ class IsAdminMiddlewareTest extends TestCase
         $this->expectException(UnauthorizedException::class);
 
         $user = new User(['id' => 2, 'role' => UserRole::USER]);
-        $this->userRepository->findOneBy('id', 2)->willReturn($user);
+        $this->userRepository->findOneBy(['id' => 2])->willReturn($user);
 
         $_SESSION = [
             'user_id' => 2,

@@ -115,7 +115,7 @@ class AdminAction extends Action
         $page = (int) ($request->getQueryParams()['page'] ?? 1);
         $perPage = 10;
 
-        $paginate = $this->propertyRepository->paginate($page, $perPage);
+        $paginate = $this->propertyRepository->search([], $page, $perPage);
 
         return $this->render("admin/ads", [
             "ads" => $paginate['items'],

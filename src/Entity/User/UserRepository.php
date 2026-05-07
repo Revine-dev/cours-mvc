@@ -18,9 +18,19 @@ interface UserRepository
      */
     public function findUserOfId(int $id): User;
 
-    public function findOneBy(string $key, mixed $value): ?User;
+    /**
+     * @param array $criteria
+     * @param array|null $orderBy
+     * @return User|null
+     */
+    public function findOneBy(array $criteria, ?array $orderBy = null);
 
-    public function where(string $key, mixed $value): static;
-
-    public function get(): array;
+    /**
+     * @param array $criteria
+     * @param array|null $orderBy
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return User[]
+     */
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array;
 }

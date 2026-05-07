@@ -27,34 +27,13 @@ class ListPropertiesAction extends Action
     {
         $queryParams = $this->request->getQueryParams();
 
-        $query = $this->propertyRepository;
-
-        // Filter by status (public view only shows available or under compromise)
-        $query->whereIn('status', ['for_sale', 'compromise']);
-
-        // Filter by type
-        if (!empty($queryParams['type'] ?? null)) {
-            $query->where('type', $queryParams['type']);
-        }
-
-        // Filter by city (case-insensitive)
-        if (!empty($queryParams['city'] ?? null)) {
-            $query->whereLike('l.city', $queryParams['city']);
-        }
-
-        // Filter by minimum price
-        if (!empty($queryParams['min_price'] ?? null)) {
-            $query->whereGreaterThanOrEqual('price', (int)$queryParams['min_price']);
-        }
-
-        // Filter by maximum price
-        if (!empty($queryParams['max_price'] ?? null)) {
-            $query->whereLessThanOrEqual('price', (int)$queryParams['max_price']);
-        }
-
         $page = (int)($queryParams['page'] ?? 1);
         $perPage = 10;
-        $pagination = $query->latest()->paginate($page, $perPage);
+
+        $filters = $queryParams;
+        $filters['status_in'] = ['for_sale', 'compromise'];
+
+        $pagination = $this->propertyRepository->search($filters, $page, $perPage);
 
         return $this->render("properties", [
             'properties' => $pagination['items'],

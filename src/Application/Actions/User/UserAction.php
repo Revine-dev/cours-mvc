@@ -28,7 +28,7 @@ class UserAction extends Action
 
     private function isExistingUser(string $email, string $password): ?\App\Entity\User\User
     {
-        $user = $this->usersRepository->findOneBy('email', $email);
+        $user = $this->usersRepository->findOneBy(['email' => $email]);
         return ($user && password_verify($password, $user->password)) ? $user : null;
     }
 

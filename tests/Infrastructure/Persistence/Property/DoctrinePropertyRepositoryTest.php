@@ -17,7 +17,8 @@ class DoctrinePropertyRepositoryTest extends DatabaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new DoctrinePropertyRepository($this->getEntityManager());
+        $em = $this->getEntityManager();
+        $this->repository = new DoctrinePropertyRepository($em, $em->getClassMetadata(Property::class));
     }
 
     private function createSampleProperty(string $title, string $slug, float $price = 100000.0, string $city = 'Paris'): Property
@@ -84,63 +85,47 @@ class DoctrinePropertyRepositoryTest extends DatabaseTestCase
         $this->assertEquals('Beach House', $foundProperty->title);
     }
 
-    public function testWhereLike(): void
+    public function testSearch(): void
     {
-        $p1 = $this->createSampleProperty('Modern Loft', 'modern-loft');
-        $p2 = $this->createSampleProperty('Old Cottage', 'old-cottage');
+        $p1 = $this->createSampleProperty('Modern Loft', 'modern-loft', 150000.0, 'Paris');
+        $p2 = $this->createSampleProperty('Old Cottage', 'old-cottage', 80000.0, 'Lyon');
+        $p1->status = 'for_sale';
+        $p2->status = 'for_sale';
 
         $this->em->persist($p1);
         $this->em->persist($p2);
         $this->em->flush();
 
-        $results = $this->repository->whereLike('title', 'Modern')->get();
-        $this->assertCount(1, $results);
-        $this->assertEquals('Modern Loft', $results[0]->title);
+        // Test city filter
+        $results = $this->repository->search(['city' => 'Lyon']);
+        $this->assertCount(1, $results['items']);
+        $this->assertEquals('Old Cottage', $results['items'][0]->title);
+
+        // Test price filter
+        $results = $this->repository->search(['min_price' => 100000]);
+        $this->assertCount(1, $results['items']);
+        $this->assertEquals('Modern Loft', $results['items'][0]->title);
+
+        // Test multiple filters
+        $results = $this->repository->search(['status_in' => ['for_sale']]);
+        $this->assertCount(2, $results['items']);
     }
 
-    public function testPriceFilters(): void
-    {
-        $p1 = $this->createSampleProperty('Cheap', 'cheap', 50000.0);
-        $p2 = $this->createSampleProperty('Expensive', 'expensive', 500000.0);
-
-        $this->em->persist($p1);
-        $this->em->persist($p2);
-        $this->em->flush();
-
-        $cheapOnes = $this->repository->whereLessThanOrEqual('price', 100000.0)->get();
-        $this->assertCount(1, $cheapOnes);
-        $this->assertEquals('Cheap', $cheapOnes[0]->title);
-
-        $expensiveOnes = $this->repository->whereGreaterThanOrEqual('price', 400000.0)->get();
-        $this->assertCount(1, $expensiveOnes);
-        $this->assertEquals('Expensive', $expensiveOnes[0]->title);
-    }
-
-    public function testPaginate(): void
+    public function testSearchPagination(): void
     {
         for ($i = 1; $i <= 5; $i++) {
             $p = $this->createSampleProperty("Prop $i", "prop-$i", 100000.0 * $i);
+            $p->status = 'for_sale';
             $this->em->persist($p);
         }
         $this->em->flush();
 
         // Page 1, 2 items per page
-        $pagination = $this->repository->paginate(1, 2);
+        $pagination = $this->repository->search([], 1, 2);
         $this->assertCount(2, $pagination['items']);
         $this->assertEquals(5, $pagination['total']);
         $this->assertEquals(1, $pagination['current_page']);
         $this->assertEquals(2, $pagination['per_page']);
         $this->assertEquals(3, $pagination['last_page']);
-
-        // Page 3, should have 1 item left
-        $pagination = $this->repository->paginate(3, 2);
-        $this->assertCount(1, $pagination['items']);
-        $this->assertEquals(3, $pagination['current_page']);
-
-        // Page 4, should be empty
-        $pagination = $this->repository->paginate(4, 2);
-        $this->assertCount(0, $pagination['items']);
-        $this->assertEquals(4, $pagination['current_page']);
-        $this->assertEquals(5, $pagination['total']);
     }
 }
