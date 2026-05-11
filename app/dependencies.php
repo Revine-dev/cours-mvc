@@ -32,7 +32,16 @@ return function (ContainerBuilder $containerBuilder) {
             );
 
             // Ignore doctrine_migration_versions table in schema validation
+            // but keep it visible for migration commands
             $config->setSchemaAssetsFilter(function ($assetName) {
+                if (PHP_SAPI === 'cli') {
+                    $argv = $_SERVER['argv'] ?? [];
+                    foreach ($argv as $arg) {
+                        if (str_contains($arg, 'migrations:')) {
+                            return true;
+                        }
+                    }
+                }
                 return !in_array($assetName, ['doctrine_migration_versions']);
             });
 
