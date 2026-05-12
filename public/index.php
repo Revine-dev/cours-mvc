@@ -86,6 +86,12 @@ $errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logError, $lo
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 // Run App & Emit Response
-$response = $app->handle($request);
+try {
+    $response = $app->handle($request);
+} catch (Throwable $e) {
+    error_log("DIAGNOSTIC: Caught error in index.php: " . $e->getMessage());
+    $response = $errorHandler($request, $e, $displayErrorDetails, $logError, $logErrorDetails);
+}
+
 $responseEmitter = new ResponseEmitter();
 $responseEmitter->emit($response);

@@ -42,29 +42,10 @@ class ShutdownHandler
             $errorLine = $error['line'];
             $errorMessage = $error['message'];
             $errorType = $error['type'];
-            $message = 'An error while processing your request. Please try again later.';
 
-            if ($this->displayErrorDetails) {
-                switch ($errorType) {
-                    case E_USER_ERROR:
-                        $message = "FATAL ERROR: {$errorMessage}. ";
-                        $message .= " on line {$errorLine} in file {$errorFile}.";
-                        break;
-
-                    case E_USER_WARNING:
-                        $message = "WARNING: {$errorMessage}";
-                        break;
-
-                    case E_USER_NOTICE:
-                        $message = "NOTICE: {$errorMessage}";
-                        break;
-
-                    default:
-                        $message = "ERROR: {$errorMessage}";
-                        $message .= " on line {$errorLine} in file {$errorFile}.";
-                        break;
-                }
-            }
+            // Always use the detailed message for the exception so the logger can see it.
+            // The HttpErrorHandler will decide whether to show it to the user.
+            $message = "ERROR: {$errorMessage} on line {$errorLine} in file {$errorFile}";
 
             $exception = new HttpInternalServerErrorException($this->request, $message);
             $response = $this->errorHandler->__invoke(

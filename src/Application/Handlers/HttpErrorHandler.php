@@ -71,7 +71,13 @@ class HttpErrorHandler extends SlimErrorHandler
             $error->setDescription(rtrim($exception->getMessage(), '.'));
         } elseif ($exception instanceof HttpException) {
             $statusCode = $exception->getCode();
-            $error->setDescription(rtrim($exception->getMessage(), '.'));
+
+            // For 500 errors, hide the detailed message from the user unless displayErrorDetails is true
+            if ($statusCode >= 500 && !$this->displayErrorDetails) {
+                $error->setDescription('An internal error has occurred while processing your request');
+            } else {
+                $error->setDescription(rtrim($exception->getMessage(), '.'));
+            }
 
             $this->logError("", $exception);
 
@@ -152,12 +158,24 @@ class HttpErrorHandler extends SlimErrorHandler
      */
     protected function logError(string $error, ?\Exception $exception = null): void
     {
+        static $logged = false;
+        if ($logged) {
+            return;
+        }
+        $logged = true;
+
         $exception = !$error && $exception ? $exception : $this->exception;
         $request = $this->request;
 
         // Get the real HTTP code
-        $code = $exception->getCode();
-        $code = $code ?: 500;
+        $code = 500;
+        if ($exception instanceof AppException || $exception instanceof RouterException) {
+            $code = $exception->getStatusCode();
+        } elseif ($exception instanceof HttpException) {
+            $code = $exception->getCode();
+        } elseif ($exception instanceof Throwable) {
+            $code = $exception->getCode() ?: 500;
+        }
 
         $method = $request->getMethod();
         $uri = (string) $request->getUri();
@@ -175,11 +193,12 @@ class HttpErrorHandler extends SlimErrorHandler
             $routePattern = " (Route: {$routePattern})";
         }
 
-        if ($exception instanceof RouterException || $exception instanceof HttpException) {
-            if (!ConfigRegistry::get("log_http_errors")) {
-                return;
-            }
+        // Always log 500+ errors. For 4xx errors, respect log_http_errors setting.
+        if ($code < 500 && !ConfigRegistry::get("log_http_errors")) {
+            return;
+        }
 
+        if ($exception instanceof RouterException || $exception instanceof HttpException) {
             $title = match ($code) {
                 404 => 'This page could not be found',
                 403 => 'Forbidden',
@@ -189,7 +208,8 @@ class HttpErrorHandler extends SlimErrorHandler
                 default => 'An error occurred',
             };
 
-            $fullError = sprintf("[%d] %s %s%s - %s", $code, $method, $uri, $routePattern, $title);
+            $message = rtrim($exception->getMessage(), '.');
+            $fullError = sprintf("[%d] %s %s%s - %s: %s", $code, $method, $uri, $routePattern, $title, $message);
         } else {
             // Get a clean short name for the exception class
             $reflection = new \ReflectionClass($exception);
